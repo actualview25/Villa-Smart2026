@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Smart Villa</title>
+<meta charset="utf-8">
+<meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
+<style> @-ms-viewport { width: device-width; } </style>
+<link rel="stylesheet" href="vendor/reset.min.css">
+<link rel="stylesheet" href="style.css">
+<!-- أيقونة التبويب - حل مشكلة 404 -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+</head>
+<body class="multiple-scenes view-control-buttons">
+<!-- ===== PLATFORM LOGO (HIDDEN INITIALLY) ===== -->
+<div id="platformLogo" style="display: none;">
+  <div id="logoText">Actual View</div>
+  <div id="logoSubtext">3D PHOTOGRAPHY</div>
+</div>
+<!-- Intro Video -->
+<div id="introVideo" style="display: block; position: relative;">
+  <video id="introVideoElement" autoplay muted playsinline style="width: 100%; height: 100%; object-fit: cover;">
+    <source src="arial-drop.mp4" type="video/mp4">
+  </video>
+  <!-- زر تخطي الفيديو -->
+ <!-- زر تخطي الفيديو - نسخة شفافة أنيقة -->
+<button id="skipVideoBtn" style="position: absolute !important; bottom: 30px !important; right: 30px !important; background: rgba(255,255,255,0.15) !important; color: white !important; padding: 14px 32px !important; border-radius: 50px !important; font-size: 18px !important; font-weight: bold !important; border: 1px solid rgba(255,255,255,0.3) !important; cursor: pointer !important; z-index: 999999 !important; display: flex !important; align-items: center !important; gap: 10px !important; backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important; box-shadow: 0 4px 20px rgba(0,0,0,0.2) !important; transition: all 0.3s ease !important;">
+  ⏭️ تخطي
+</button>
+</div>
+
+<!-- Intro Image -->
+<div id="introImage">
+  <div id="enterTour">
+    <img src="enter-icon.png" alt="Enter Tour">
+  </div>
+</div>
+
+<!-- Marzipano Container -->
+<div id="pano"></div>
+
+<!-- ===== أيقونة المخططات مع نص ===== -->
+<div id="mapIconButton" style="display: none;">
+  <img src="img/map-icon.png" alt="Floor Plans" id="mapIconImg">
+  <span class="map-icon-text">MAP</span>
+</div>
+
+<!-- Scene List -->
+<div id="sceneList">
+  <ul class="scenes">
+    <a href="javascript:void(0)" class="scene" data-id="0-startpoint">
+      <li class="text">StartPoint</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="1-outercourtyard">
+      <li class="text">OuterCourtyard</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="2-entrance-ground-floor">
+      <li class="text">Entrance-Ground-Floor</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="3-pool-view-1">
+      <li class="text">Pool-View-1</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="4-pool-view-2">
+      <li class="text">Pool-View-2</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="5-hall-ground-view1">
+      <li class="text">Hall-Ground-View1</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="6-hall-ground-view2">
+      <li class="text">Hall-Ground-View2</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="7-hall-ground-view3">
+      <li class="text">Hall-Ground-View3</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="8-kitchin-ground-view1">
+      <li class="text">kitchin-Ground-View1</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="9-kitchin-ground-view2">
+      <li class="text">Kitchin-Ground-View2</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="10-corridor1-ground">
+      <li class="text">Corridor1-Ground</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="11-corridor2-ground">
+      <li class="text">Corridor2-Ground</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="12-livingroom-ground">
+      <li class="text">LivingRoom-Ground</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="13-corridor3-ground">
+      <li class="text">Corridor3-Ground</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="14-corridor4-ground">
+      <li class="text">Corridor4-Ground</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="15-room1-ground-floor">
+      <li class="text">Room1-Ground-Floor</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="16-atirum-ground-floor">
+      <li class="text">Atirum-Ground-Floor</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="17-corridor5-ground-floor">
+      <li class="text">Corridor5-Ground-Floor</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="18-room2-ground-floor">
+      <li class="text">Room2-Ground-Floor</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="19-room3-ground-floor">
+      <li class="text">Room3-Ground-Floor</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="20-bath-room-ground">
+      <li class="text">BatH-Room-Ground</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="21-landury-ground-floor">
+      <li class="text">Landury-Ground-Floor</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="22-bath-room-room3-ground">
+      <li class="text">Bath-Room-Room3-Ground</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="23-bath-room-room2-ground">
+      <li class="text">Bath-Room-Room2-Ground</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="24-stair-to-basement">
+      <li class="text">Stair to Basement</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="25-corridor1-basement">
+      <li class="text">Corridor1-Basement</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="26-livingroom-basement">
+      <li class="text">LivingRoom-Basement</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="27-br-basement">
+      <li class="text">B.R-Basement</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="28-corridor2-basement">
+      <li class="text">Corridor2-Basement</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="29-atirum-basement-1">
+      <li class="text">Atirum-Basement-1</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="30-atirum-basement-2">
+      <li class="text">Atirum-Basement-2</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="31-stair-to-first-floor">
+      <li class="text">Stair To First-Floor</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="32-corridor1-first-floor">
+      <li class="text">Corridor1-First-Floor</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="33-corridor2-first-floor">
+      <li class="text">Corridor2-First-Floor</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="34-corridor3-first-floor">
+      <li class="text">Corridor3-First-Floor</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="35-corridor4-first-floor">
+      <li class="text">Corridor4-First-Floor</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="36-room-view1-firstfloor">
+      <li class="text">Room-View1-FirstFloor</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="37-room-view2-firstfloor">
+      <li class="text">Room-View2-FirstFloor</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="38-br-firstfloor">
+      <li class="text">B.R-FirstFLoor</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="39-laundry-firstfloor">
+      <li class="text">laundry-FirstFloor</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="40-outercourtyard1-first">
+      <li class="text">OuterCourtyard1-First</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="41-outercourtyard2-first">
+      <li class="text">OuterCourtyard2-First</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="42-outercoutyard3-first">
+      <li class="text">OuterCoutyard3-First</li>
+    </a>
+  </ul>
+</div>
+
+<div id="titleBar">
+  <h1 class="sceneName"></h1>
+</div>
+
+<a href="javascript:void(0)" id="autorotateToggle">
+  <img class="icon off" src="img/play.png">
+  <img class="icon on" src="img/pause.png">
+</a>
+
+<a href="javascript:void(0)" id="fullscreenToggle">
+  <img class="icon off" src="img/fullscreen.png">
+  <img class="icon on" src="img/windowed.png">
+</a>
+
+<a href="javascript:void(0)" id="sceneListToggle">
+  <img class="icon off" src="img/expand.png">
+  <img class="icon on" src="img/collapse.png">
+</a>
+
+<a href="javascript:void(0)" id="viewUp" class="viewControlButton viewControlButton-1">
+  <img class="icon" src="img/up.png">
+</a>
+<a href="javascript:void(0)" id="viewDown" class="viewControlButton viewControlButton-2">
+  <img class="icon" src="img/down.png">
+</a>
+<a href="javascript:void(0)" id="viewLeft" class="viewControlButton viewControlButton-3">
+  <img class="icon" src="img/left.png">
+</a>
+<a href="javascript:void(0)" id="viewRight" class="viewControlButton viewControlButton-4">
+  <img class="icon" src="img/right.png">
+</a>
+<a href="javascript:void(0)" id="viewIn" class="viewControlButton viewControlButton-5">
+  <img class="icon" src="img/plus.png">
+</a>
+<a href="javascript:void(0)" id="viewOut" class="viewControlButton viewControlButton-6">
+  <img class="icon" src="img/minus.png">
+</a>
+
+<!-- ===== نافذة المخططات المنبثقة ===== -->
+<div id="floorPlanModal" class="floorplan-modal">
+  <div class="floorplan-modal-content">
+    <!-- زر إغلاق واضح للجوال والكمبيوتر -->
+    <button id="closeModalBtn" class="modal-close-btn">&times;</button>
+    
+    <!-- الهيدر مع العنوان وزر التحميل -->
+    <div class="floorplan-header">
+      <h2>Villa Plans</h2>
+      <button id="downloadPlanBtn" class="download-btn">
+        <img src="img/download-icon.png" alt="Download"> Download
+      </button>
+    </div>
+    <!-- حاوية الصورة مع أسهم التنقل -->
+    <div class="floorplan-image-container">
+      <button id="prevPlanBtn" class="nav-btn prev-btn">&#10094;</button>
+      <img id="currentFloorPlanImg" src="img/Ground-floor.png" alt="Floor Plan">
+      <button id="nextPlanBtn" class="nav-btn next-btn">&#10095;</button>
+    </div>
+    <!-- المؤشرات (الأدوار) -->
+    <div class="floorplan-indicators">
+      <span class="indicator active" data-index="0">GROUND FLOOR</span>
+      <span class="indicator" data-index="1">FIRST FLOOR</span>
+      <span class="indicator" data-index="2">SECOND FLOOR</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== السكريبتات ===== -->
+<script src="vendor/screenfull.min.js"></script>
+<script src="vendor/bowser.min.js"></script>
+<script src="vendor/marzipano.js"></script>
+<script src="data.js"></script>
+
+<script>
+  // Wait for DOM to be ready
+  document.addEventListener('DOMContentLoaded', function() {
+    const introVideoElement = document.getElementById('introVideoElement');
+    const introImage = document.getElementById('introImage');
+    const enterTour = document.getElementById('enterTour');
+    const introVideo = document.getElementById('introVideo');
+    const skipVideoBtn = document.getElementById('skipVideoBtn');
+
+    if (!introVideoElement || !introImage || !enterTour || !introVideo) return;
+
+    // Force skip button to be visible
+    if (skipVideoBtn) {
+      skipVideoBtn.style.display = 'flex';
+    }
+
+    // Function to skip video
+    function skipToImage() {
+      introVideoElement.pause();
+      introVideo.style.display = 'none';
+      introImage.style.display = 'block';
+    }
+
+    // When video ends
+    introVideoElement.addEventListener('ended', skipToImage);
+
+    // Click on video to skip
+    introVideo.addEventListener('click', skipToImage);
+
+    // Skip button
+    if (skipVideoBtn) {
+      skipVideoBtn.addEventListener('click', skipToImage);
+    }
+
+// Enter tour
+enterTour.addEventListener('click', function() {
+  introImage.style.display = 'none';
+  
+  // Show map icon
+  const mapIcon = document.getElementById('mapIconButton');
+  if (mapIcon) {
+    mapIcon.style.display = 'flex';
+  }
+  
+  // Show platform logo - TOP RIGHT
+  const platformLogo = document.getElementById('platformLogo');
+  if (platformLogo) {
+    platformLogo.style.display = 'flex';
+    platformLogo.style.visibility = 'visible';
+    platformLogo.style.opacity = '1';
+    platformLogo.style.top = '30px';
+    platformLogo.style.right = '30px';
+    platformLogo.style.left = 'auto';
+    platformLogo.style.bottom = 'auto';
+    platformLogo.style.width = '160px';
+    console.log('✅ Logo forced to appear at TOP RIGHT');
+  }
+  
+  if (window.startTour) {
+    window.startTour();
+  }
+});
+ });
+</script>
+
+<!-- index.js في النهاية -->
+<script src="index.js"></script>
+
+</body>
+</html>
