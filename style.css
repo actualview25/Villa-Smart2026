@@ -1114,13 +1114,13 @@ body.view-control-buttons .viewControlButton {
     padding: 6px 12px;
   }
 }
-/* ===== أيقونة الكاميرا - تصميم نهائي ===== */
+/* ===== تعديلات الكاميرا فقط ===== */
 #cameraIconButton {
   position: fixed;
-  bottom: 30px;  /* نفس قيمة MAP بالضبط */
-  right: 140px;  /* بجانب MAP (MAP عند 30px + 80px عرض + 30px مسافة = 140px) */
+  bottom: 30px !important;  /* نفس ارتفاع MAP */
+  right: 140px;  /* بجانب MAP (MAP عند 30px + عرض 80px + مسافة 30px = 140px) */
   width: 80px;
-  height: 105px;  /* ارتفاع أكبر قليلاً لاستيعاب النص */
+  height: 105px;
   display: none;  /* مخفية في البداية */
   flex-direction: column;
   align-items: center;
@@ -1143,10 +1143,10 @@ body.view-control-buttons .viewControlButton {
   height: 60px;
   object-fit: contain;
   display: block;
-  margin-bottom: 8px;  /* مسافة بين الصورة والنص */
+  margin-bottom: 5px;
 }
 
-/* إضافة نص CAMERA عبر CSS (حل مشكلة التكرار) */
+/* إضافة نص CAMERA عبر CSS */
 #cameraIconButton::after {
   content: "CAMERA";
   color: white;
@@ -1161,12 +1161,4 @@ body.view-control-buttons .viewControlButton {
   border: 1px solid rgba(255,255,255,0.3);
   font-family: 'Helvetica Neue', Arial, sans-serif;
   white-space: nowrap;
-  line-height: 1;
-  margin-top: 0;
-}
-
-/* تعديل أيقونة MAP للتأكد من المحاذاة */
-#mapIconButton {
-  bottom: 30px !important;
-  right: 30px !important;
 }
