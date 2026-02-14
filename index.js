@@ -364,11 +364,11 @@
   window.startTour = function () {
     switchScene(scenes[0]);
   };
-// ===== نظام الكاميرا - نسخة مبسطة ومجربة =====
+// ===== نظام الكاميرا - النسخة النهائية =====
 (function() {
   'use strict';
   
-  // دالة التقاط الصورة
+  // دالة التقاط الصورة - حل مشكلة الصور السوداء
   function captureSnapshot() {
     return new Promise((resolve, reject) => {
       try {
@@ -378,10 +378,18 @@
           return;
         }
 
-        // تأخير بسيط لضمان اكتمال الرسم
+        // تأكد أن canvas جاهز ومرسوم
+        if (canvas.width === 0 || canvas.height === 0) {
+          reject('الـ canvas ليس جاهزاً');
+          return;
+        }
+
+        // حل سحري للصور السوداء - ننتظر دورة رسم كاملة
         setTimeout(() => {
           try {
+            // استخدام الطريقة التقليدية
             const dataURL = canvas.toDataURL('image/png');
+            
             if (dataURL && dataURL !== 'data:,') {
               resolve(dataURL);
             } else {
@@ -390,72 +398,202 @@
           } catch (e) {
             reject(e);
           }
-        }, 200);
+        }, 100); // تأخير بسيط لضمان اكتمال الرسم
       } catch (error) {
         reject(error);
       }
     });
   }
 
-  // تفعيل الكاميرا
+  // تأثير الفلاش
+  function flash() {
+    const flashDiv = document.createElement('div');
+    flashDiv.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      opacity: 0;
+      z-index: 999999;
+      pointer-events: none;
+      transition: opacity 0.1s;
+    `;
+    document.body.appendChild(flashDiv);
+    
+    setTimeout(() => { flashDiv.style.opacity = '0.8'; }, 10);
+    setTimeout(() => { flashDiv.style.opacity = '0'; }, 100);
+    setTimeout(() => { flashDiv.remove(); }, 300);
+  }
+
+  // رسالة تأكيد
+  function showMsg(msg, isSuccess = true) {
+    const msgDiv = document.createElement('div');
+    msgDiv.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: ${isSuccess ? '#4CAF50' : '#f44336'};
+      color: white;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: bold;
+      z-index: 999999;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      border: 2px solid white;
+    `;
+    msgDiv.textContent = msg;
+    document.body.appendChild(msgDiv);
+    
+    setTimeout(() => {
+      msgDiv.remove();
+    }, 2000);
+  }
+
+  // تفعيل الكاميرا - تظهر فقط بعد دخول الجولة
   function enableCamera() {
     const cameraIcon = document.getElementById('cameraIconButton');
     if (!cameraIcon) return;
 
-    // تأكد أننا في الجولة
+    // تأكد أن الكاميرا لا تظهر إلا إذا كنا في الجولة
     const introVideo = document.getElementById('introVideo');
     const introImage = document.getElementById('introImage');
     
-    if (introVideo.style.display !== 'none' || introImage.style.display !== 'none') {
-      return; // لا نظهر الكاميرا
+    if ((introVideo && introVideo.style.display !== 'none') || 
+        (introImage && introImage.style.display !== 'none')) {
+      // ما زلنا في مرحلة الفيديو أو الصورة - لا نظهر الكاميرا
+      return;
     }
 
+    // إظهار الكاميرا
     cameraIcon.style.display = 'flex';
     
-    cameraIcon.addEventListener('click', async function(e) {
+    // إزالة أي مستمعات قديمة
+    const newIcon = cameraIcon.cloneNode(true);
+    cameraIcon.parentNode.replaceChild(newIcon, cameraIcon);
+    
+    // إضافة مستمع جديد
+    newIcon.addEventListener('click', async function(e) {
       e.preventDefault();
+      e.stopPropagation();
       
+      // تعطيل مؤقت
+      this.style.pointerEvents = 'none';
       this.style.opacity = '0.5';
       
       try {
+        // تأثير الفلاش
+        flash();
+        
+        // التقاط الصورة مع تأخير بسيط
         const imgData = await captureSnapshot();
         
+        // تحميل الصورة
         const link = document.createElement('a');
         link.href = imgData;
-        link.download = 'villa-snapshot.png';
+        
+        // اسم الملف بالتاريخ
+        const now = new Date();
+        const date = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')}`;
+        const time = `${now.getHours().toString().padStart(2,'0')}-${now.getMinutes().toString().padStart(2,'0')}-${now.getSeconds().toString().padStart(2,'0')}`;
+        link.download = `Villa-${date}-${time}.png`;
+        
         link.click();
+        
+        showMsg('✅ تم التقاط الصورة');
         
       } catch (error) {
         console.error('خطأ:', error);
+        showMsg('❌ فشل التصوير', false);
       } finally {
-        this.style.opacity = '1';
+        // إعادة تفعيل
+        setTimeout(() => {
+          newIcon.style.pointerEvents = 'auto';
+          newIcon.style.opacity = '1';
+        }, 1000);
       }
     });
+    
+    console.log('✅ الكاميرا جاهزة');
   }
 
-  // مراقب لبدء الجولة
-  const observer = new MutationObserver(() => {
-    const introVideo = document.getElementById('introVideo');
-    const introImage = document.getElementById('introImage');
+  // مراقب ذكي لدخول الجولة - يضمن عدم ظهور الكاميرا مبكراً
+  function watchForTourStart() {
+    // مراقبة التغييرات في display
+    const observer = new MutationObserver(() => {
+      const introVideo = document.getElementById('introVideo');
+      const introImage = document.getElementById('introImage');
+      const pano = document.getElementById('pano');
+      
+      // إذا كان الفيديو مخفياً والصورة مخفية والـ pano ظاهر
+      if (introVideo && introImage && pano) {
+        if (introVideo.style.display === 'none' && 
+            introImage.style.display === 'none' && 
+            pano.style.display !== 'none') {
+          
+          // تأكد أن الكاميرا لم تفعل بعد
+          const cameraIcon = document.getElementById('cameraIconButton');
+          if (cameraIcon && cameraIcon.style.display !== 'flex') {
+            setTimeout(enableCamera, 2000); // تأخير أطول لضمان استقرار الجولة
+          }
+        }
+      }
+    });
     
-    if (introVideo.style.display === 'none' && introImage.style.display === 'none') {
-      setTimeout(enableCamera, 2000);
-      observer.disconnect();
+    observer.observe(document.body, { 
+      attributes: true, 
+      subtree: true,
+      attributeFilter: ['style', 'display'] 
+    });
+    
+    // ربط بزر الدخول
+    const enterBtn = document.getElementById('enterTour');
+    if (enterBtn) {
+      enterBtn.addEventListener('click', () => {
+        // لا نظهر الكاميرا فوراً، ننتظر حتى تختفي شاشة الدخول
+        setTimeout(() => {
+          const introImage = document.getElementById('introImage');
+          if (introImage && introImage.style.display === 'none') {
+            enableCamera();
+          }
+        }, 2500);
+      });
     }
-  });
-  
-  observer.observe(document.body, { 
-    attributes: true, 
-    subtree: true,
-    attributeFilter: ['style'] 
-  });
+    
+    // ربط بـ startTour
+    const originalStart = window.startTour;
+    window.startTour = function() {
+      if (originalStart) originalStart();
+      // ننتظر حتى تبدأ الجولة فعلياً
+      setTimeout(enableCamera, 2500);
+    };
+    
+    // فحص دوري للتأكد
+    setInterval(() => {
+      const introVideo = document.getElementById('introVideo');
+      const introImage = document.getElementById('introImage');
+      const cameraIcon = document.getElementById('cameraIconButton');
+      
+      if (introVideo && introImage && cameraIcon) {
+        // إذا كان الفيديو مخفياً والصورة مخفية والكاميرا لا تظهر
+        if (introVideo.style.display === 'none' && 
+            introImage.style.display === 'none' && 
+            cameraIcon.style.display !== 'flex') {
+          // تأكد أن الجولة بدأت فعلاً بوجود canvas
+          if (document.querySelector('#pano canvas')) {
+            enableCamera();
+          }
+        }
+      }
+    }, 3000); // فحص كل 3 ثواني
+  }
 
-  // ربط بزر الدخول
-  document.getElementById('enterTour')?.addEventListener('click', () => {
-    setTimeout(enableCamera, 2500);
-  });
+  // تشغيل المراقب
+  document.addEventListener('DOMContentLoaded', watchForTourStart);
 
-})();
 })();
 
 /* ========== FLOOR PLAN MODULE ========== */
@@ -479,4 +617,103 @@
     var floorPlans = [
       { src: 'img/Ground-floor.png', name: 'Ground-floor', title: 'GROUND FLOOR' },
       { src: 'img/First-floor.png', name: 'First-floor', title: 'FIRST FLOOR' },
-      { src: 'img/Second-floor.png', name: 'Second-floor', title:
+      { src: 'img/Second-floor.png', name: 'Second-floor', title: 'SECOND FLOOR' }
+    ];
+
+    var currentIndex = 0;
+
+    function openModal(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      modal.classList.add('show');
+    }
+
+    function closeModal() {
+      modal.classList.remove('show');
+    }
+
+    if (!('ontouchstart' in window)) {
+      mapIcon.addEventListener('mouseenter', openModal);
+    } else {
+      mapIcon.addEventListener('click', openModal);
+    }
+
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    var modalContent = document.querySelector('.floorplan-modal-content');
+    if (modalContent) {
+      modalContent.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    }
+
+    var closeBtn = document.getElementById('closeModalBtn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        closeModal();
+      });
+    }
+
+    function updateFloorPlan(index) {
+      if (index < 0) index = floorPlans.length - 1;
+      if (index >= floorPlans.length) index = 0;
+      
+      currentIndex = index;
+      
+      modalImg.src = floorPlans[index].src;
+      modalImg.alt = floorPlans[index].title;
+
+      for (var i = 0; i < indicators.length; i++) {
+        if (i === index) {
+          indicators[i].classList.add('active');
+        } else {
+          indicators[i].classList.remove('active');
+        }
+      }
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        updateFloorPlan(currentIndex - 1);
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        updateFloorPlan(currentIndex + 1);
+      });
+    }
+
+    for (var i = 0; i < indicators.length; i++) {
+      indicators[i].addEventListener('click', function(e) {
+        e.stopPropagation();
+        var index = parseInt(this.getAttribute('data-index'));
+        updateFloorPlan(index);
+      });
+    }
+
+    if (downloadBtn) {
+      downloadBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var link = document.createElement('a');
+        link.href = floorPlans[currentIndex].src;
+        link.download = floorPlans[currentIndex].name + '.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    }
+
+    updateFloorPlan(0);
+  });
+
+})();
