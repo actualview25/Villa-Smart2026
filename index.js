@@ -364,7 +364,33 @@
   window.startTour = function () {
     switchScene(scenes[0]);
   };
+// ===== تفعيل أيقونة الكاميرا =====
+var cameraIcon = document.getElementById('cameraIconButton');
+if (cameraIcon) {
+  // عرض الأيقونة عند بدء الجولة
+  cameraIcon.style.display = 'flex';
 
+  // وظيفة الضغط على الأيقونة لالتقاط صورة 2D
+  cameraIcon.addEventListener('click', function() {
+    if (!viewer) return;
+
+    // التقاط الصورة الحالية للـ canvas
+    var canvas = panoElement.querySelector('canvas');
+    if (!canvas) return;
+
+    var imageData = canvas.toDataURL('image/png');
+
+    // إنشاء رابط التحميل
+    var link = document.createElement('a');
+    link.href = imageData;
+    link.download = 'snapshot.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    console.log('✅ تم التقاط الصورة 2D بدون إطار أو شعار');
+  });
+}
 })();
 
 /* ========== FLOOR PLAN MODULE ========== */
