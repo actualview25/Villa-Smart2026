@@ -1114,14 +1114,14 @@ body.view-control-buttons .viewControlButton {
     padding: 6px 12px;
   }
 }
-/* ===== تعديل ارتفاع الكاميرا ===== */
+/* ===== أيقونة الكاميرا - تصميم نهائي ===== */
 #cameraIconButton {
   position: fixed;
-  bottom: 30px !important;  /* نفس قيمة MAP */
-  right: 140px;
+  bottom: 30px;  /* نفس قيمة MAP بالضبط */
+  right: 140px;  /* بجانب MAP (MAP عند 30px + 80px عرض + 30px مسافة = 140px) */
   width: 80px;
-  height: 105px;
-  display: flex;
+  height: 105px;  /* ارتفاع أكبر قليلاً لاستيعاب النص */
+  display: none;  /* مخفية في البداية */
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -1130,8 +1130,12 @@ body.view-control-buttons .viewControlButton {
   background: transparent;
   border: none;
   transition: transform 0.2s ease;
-  padding-bottom: 0;  /* إزالة أي padding إضافي */
-  margin: 0;  /* إزالة أي margin */
+  padding: 0;
+  margin: 0;
+}
+
+#cameraIconButton:hover {
+  transform: scale(1.1);
 }
 
 #cameraIconButton img {
@@ -1139,9 +1143,10 @@ body.view-control-buttons .viewControlButton {
   height: 60px;
   object-fit: contain;
   display: block;
-  margin-bottom: 4px;  /* مسافة بسيطة بين الصورة والنص */
+  margin-bottom: 8px;  /* مسافة بين الصورة والنص */
 }
 
+/* إضافة نص CAMERA عبر CSS (حل مشكلة التكرار) */
 #cameraIconButton::after {
   content: "CAMERA";
   color: white;
@@ -1156,28 +1161,12 @@ body.view-control-buttons .viewControlButton {
   border: 1px solid rgba(255,255,255,0.3);
   font-family: 'Helvetica Neue', Arial, sans-serif;
   white-space: nowrap;
+  line-height: 1;
+  margin-top: 0;
 }
 
-/* تعديل أيقونة MAP لتكون بنفس الارتفاع */
+/* تعديل أيقونة MAP للتأكد من المحاذاة */
 #mapIconButton {
   bottom: 30px !important;
-}
-/* تحريك النص لأسفل قليلاً */
-#cameraIconButton {
-  padding-bottom: 25px; /* يخلق مساحة للنص */
-}
-
-/* تعديل مكان الأيقونة على الشاشات الصغيرة */
-@media (max-width: 600px) {
-  #cameraIconButton {
-    bottom: 20px;
-    right: 120px;
-    width: 70px;
-    height: 70px;
-  }
-  
-  #cameraIconButton img {
-    width: 50px;
-    height: 50px;
-  }
+  right: 30px !important;
 }
