@@ -364,11 +364,11 @@
   window.startTour = function () {
     switchScene(scenes[0]);
   };
-// ===== نظام الكاميرا النهائي =====
+// ===== نظام الكاميرا - النسخة النهائية =====
 (function() {
   'use strict';
   
-  // دالة التقاط الصورة بطريقة مضمونة
+  // دالة التقاط الصورة - حل مشكلة الصور السوداء
   function captureSnapshot() {
     return new Promise((resolve, reject) => {
       try {
@@ -378,20 +378,27 @@
           return;
         }
 
-        // تأكد أن canvas جاهز
+        // تأكد أن canvas جاهز ومرسوم
         if (canvas.width === 0 || canvas.height === 0) {
           reject('الـ canvas ليس جاهزاً');
           return;
         }
 
-        // استخدام الطريقة التقليدية وهي الأكثر استقراراً
-        const dataURL = canvas.toDataURL('image/png');
-        
-        if (dataURL && dataURL !== 'data:,') {
-          resolve(dataURL);
-        } else {
-          reject('فشل إنشاء الصورة');
-        }
+        // حل سحري للصور السوداء - ننتظر دورة رسم كاملة
+        setTimeout(() => {
+          try {
+            // استخدام الطريقة التقليدية
+            const dataURL = canvas.toDataURL('image/png');
+            
+            if (dataURL && dataURL !== 'data:,') {
+              resolve(dataURL);
+            } else {
+              reject('فشل إنشاء الصورة');
+            }
+          } catch (e) {
+            reject(e);
+          }
+        }, 100); // تأخير بسيط لضمان اكتمال الرسم
       } catch (error) {
         reject(error);
       }
@@ -446,10 +453,20 @@
     }, 2000);
   }
 
-  // تفعيل الكاميرا (تظهر فقط بعد الدخول للجولة)
+  // تفعيل الكاميرا - تظهر فقط بعد دخول الجولة
   function enableCamera() {
     const cameraIcon = document.getElementById('cameraIconButton');
     if (!cameraIcon) return;
+
+    // تأكد أن الكاميرا لا تظهر إلا إذا كنا في الجولة
+    const introVideo = document.getElementById('introVideo');
+    const introImage = document.getElementById('introImage');
+    
+    if ((introVideo && introVideo.style.display !== 'none') || 
+        (introImage && introImage.style.display !== 'none')) {
+      // ما زلنا في مرحلة الفيديو أو الصورة - لا نظهر الكاميرا
+      return;
+    }
 
     // إظهار الكاميرا
     cameraIcon.style.display = 'flex';
@@ -471,10 +488,7 @@
         // تأثير الفلاش
         flash();
         
-        // انتظار لحظة
-        await new Promise(r => setTimeout(r, 50));
-        
-        // التقاط الصورة
+        // التقاط الصورة مع تأخير بسيط
         const imgData = await captureSnapshot();
         
         // تحميل الصورة
@@ -483,8 +497,8 @@
         
         // اسم الملف بالتاريخ
         const now = new Date();
-        const date = `${now.getFullYear()}-${(now.getMonth()+1)}-${now.getDate()}`;
-        const time = `${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
+        const date = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')}`;
+        const time = `${now.getHours().toString().padStart(2,'0')}-${now.getMinutes().toString().padStart(2,'0')}-${now.getSeconds().toString().padStart(2,'0')}`;
         link.download = `Villa-${date}-${time}.png`;
         
         link.click();
@@ -506,18 +520,26 @@
     console.log('✅ الكاميرا جاهزة');
   }
 
-  // مراقب لدخول الجولة
+  // مراقب ذكي لدخول الجولة - يضمن عدم ظهور الكاميرا مبكراً
   function watchForTourStart() {
-    // الطريقة الأولى: مراقبة تغيير display
+    // مراقبة التغييرات في display
     const observer = new MutationObserver(() => {
       const introVideo = document.getElementById('introVideo');
       const introImage = document.getElementById('introImage');
+      const pano = document.getElementById('pano');
       
-      if ((introVideo && introVideo.style.display === 'none') && 
-          (introImage && introImage.style.display === 'none')) {
-        // الجولة بدأت
-        setTimeout(enableCamera, 1500);
-        observer.disconnect();
+      // إذا كان الفيديو مخفياً والصورة مخفية والـ pano ظاهر
+      if (introVideo && introImage && pano) {
+        if (introVideo.style.display === 'none' && 
+            introImage.style.display === 'none' && 
+            pano.style.display !== 'none') {
+          
+          // تأكد أن الكاميرا لم تفعل بعد
+          const cameraIcon = document.getElementById('cameraIconButton');
+          if (cameraIcon && cameraIcon.style.display !== 'flex') {
+            setTimeout(enableCamera, 2000); // تأخير أطول لضمان استقرار الجولة
+          }
+        }
       }
     });
     
@@ -527,20 +549,46 @@
       attributeFilter: ['style', 'display'] 
     });
     
-    // الطريقة الثانية: ربط بزر الدخول
+    // ربط بزر الدخول
     const enterBtn = document.getElementById('enterTour');
     if (enterBtn) {
       enterBtn.addEventListener('click', () => {
-        setTimeout(enableCamera, 2000);
+        // لا نظهر الكاميرا فوراً، ننتظر حتى تختفي شاشة الدخول
+        setTimeout(() => {
+          const introImage = document.getElementById('introImage');
+          if (introImage && introImage.style.display === 'none') {
+            enableCamera();
+          }
+        }, 2500);
       });
     }
     
-    // الطريقة الثالثة: ربط بـ startTour
+    // ربط بـ startTour
     const originalStart = window.startTour;
     window.startTour = function() {
       if (originalStart) originalStart();
-      setTimeout(enableCamera, 2000);
+      // ننتظر حتى تبدأ الجولة فعلياً
+      setTimeout(enableCamera, 2500);
     };
+    
+    // فحص دوري للتأكد
+    setInterval(() => {
+      const introVideo = document.getElementById('introVideo');
+      const introImage = document.getElementById('introImage');
+      const cameraIcon = document.getElementById('cameraIconButton');
+      
+      if (introVideo && introImage && cameraIcon) {
+        // إذا كان الفيديو مخفياً والصورة مخفية والكاميرا لا تظهر
+        if (introVideo.style.display === 'none' && 
+            introImage.style.display === 'none' && 
+            cameraIcon.style.display !== 'flex') {
+          // تأكد أن الجولة بدأت فعلاً بوجود canvas
+          if (document.querySelector('#pano canvas')) {
+            enableCamera();
+          }
+        }
+      }
+    }, 3000); // فحص كل 3 ثواني
   }
 
   // تشغيل المراقب
