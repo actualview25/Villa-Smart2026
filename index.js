@@ -364,70 +364,44 @@
   window.startTour = function () {
     switchScene(scenes[0]);
   };
-// ===== نظام الكاميرا المتطور =====
+// ===== نظام الكاميرا النهائي =====
 (function() {
   'use strict';
   
-  // دالة متقدمة لالتقاط الصورة
-  function captureVillaSnapshot() {
+  // دالة التقاط الصورة بطريقة مضمونة
+  function captureSnapshot() {
     return new Promise((resolve, reject) => {
       try {
-        // البحث عن canvas
         const canvas = document.querySelector('#pano canvas');
         if (!canvas) {
-          reject('لم يتم العثور على canvas');
+          reject('الـ canvas غير موجود');
           return;
         }
 
-        // محاولة الحصول على WebGL context
-        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        // تأكد أن canvas جاهز
+        if (canvas.width === 0 || canvas.height === 0) {
+          reject('الـ canvas ليس جاهزاً');
+          return;
+        }
+
+        // استخدام الطريقة التقليدية وهي الأكثر استقراراً
+        const dataURL = canvas.toDataURL('image/png');
         
-        if (gl && canvas.width > 0 && canvas.height > 0) {
-          // طريقة WebGL عالية الجودة
-          const width = canvas.width;
-          const height = canvas.height;
-          
-          const pixels = new Uint8Array(width * height * 4);
-          gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-          
-          const tempCanvas = document.createElement('canvas');
-          tempCanvas.width = width;
-          tempCanvas.height = height;
-          const ctx = tempCanvas.getContext('2d');
-          
-          const imageData = ctx.createImageData(width, height);
-          
-          // عكس الصورة (readPixels يقرأ من الأسفل)
-          for (let y = 0; y < height; y++) {
-            for (let x = 0; x < width; x++) {
-              const sourceIndex = (y * width + x) * 4;
-              const targetIndex = ((height - 1 - y) * width + x) * 4;
-              
-              imageData.data[targetIndex] = pixels[sourceIndex];
-              imageData.data[targetIndex + 1] = pixels[sourceIndex + 1];
-              imageData.data[targetIndex + 2] = pixels[sourceIndex + 2];
-              imageData.data[targetIndex + 3] = pixels[sourceIndex + 3];
-            }
-          }
-          
-          ctx.putImageData(imageData, 0, 0);
-          resolve(tempCanvas.toDataURL('image/png'));
-          
+        if (dataURL && dataURL !== 'data:,') {
+          resolve(dataURL);
         } else {
-          // الطريقة البديلة
-          resolve(canvas.toDataURL('image/png'));
+          reject('فشل إنشاء الصورة');
         }
       } catch (error) {
-        console.error('خطأ في التقاط الصورة:', error);
         reject(error);
       }
     });
   }
 
-  // دالة عرض تأثير الفلاش
-  function showFlashEffect() {
-    const flash = document.createElement('div');
-    flash.style.cssText = `
+  // تأثير الفلاش
+  function flash() {
+    const flashDiv = document.createElement('div');
+    flashDiv.style.cssText = `
       position: fixed;
       top: 0;
       left: 0;
@@ -437,75 +411,54 @@
       opacity: 0;
       z-index: 999999;
       pointer-events: none;
-      transition: opacity 0.2s;
+      transition: opacity 0.1s;
     `;
-    document.body.appendChild(flash);
+    document.body.appendChild(flashDiv);
     
-    requestAnimationFrame(() => {
-      flash.style.opacity = '0.7';
-      setTimeout(() => {
-        flash.style.opacity = '0';
-        setTimeout(() => {
-          if (flash.parentNode) flash.parentNode.removeChild(flash);
-        }, 300);
-      }, 100);
-    });
+    setTimeout(() => { flashDiv.style.opacity = '0.8'; }, 10);
+    setTimeout(() => { flashDiv.style.opacity = '0'; }, 100);
+    setTimeout(() => { flashDiv.remove(); }, 300);
   }
 
-  // دالة عرض رسالة منبثقة
-  function showMessage(text, isSuccess = true) {
-    const msg = document.createElement('div');
-    msg.style.cssText = `
+  // رسالة تأكيد
+  function showMsg(msg, isSuccess = true) {
+    const msgDiv = document.createElement('div');
+    msgDiv.style.cssText = `
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: ${isSuccess ? 'rgba(0, 150, 0, 0.9)' : 'rgba(200, 0, 0, 0.9)'};
+      background: ${isSuccess ? '#4CAF50' : '#f44336'};
       color: white;
       padding: 15px 30px;
       border-radius: 50px;
       font-size: 18px;
       font-weight: bold;
       z-index: 999999;
-      box-shadow: 0 5px 30px rgba(0,0,0,0.3);
-      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
       border: 2px solid white;
-      animation: msgAppear 0.3s;
     `;
-    msg.textContent = text;
-    document.body.appendChild(msg);
+    msgDiv.textContent = msg;
+    document.body.appendChild(msgDiv);
     
     setTimeout(() => {
-      msg.style.opacity = '0';
-      msg.style.transition = 'opacity 0.5s';
-      setTimeout(() => {
-        if (msg.parentNode) msg.parentNode.removeChild(msg);
-      }, 500);
+      msgDiv.remove();
     }, 2000);
   }
 
-  // دالة تفعيل الكاميرا
-  function initCameraIcon() {
+  // تفعيل الكاميرا (تظهر فقط بعد الدخول للجولة)
+  function enableCamera() {
     const cameraIcon = document.getElementById('cameraIconButton');
-    if (!cameraIcon) {
-      console.error('❌ أيقونة الكاميرا غير موجودة في HTML');
-      
-      // محاولة إنشاء الأيقونة إذا لم تكن موجودة
-      createCameraIcon();
-      return;
-    }
+    if (!cameraIcon) return;
 
-    // تنظيف المستمعات القديمة
+    // إظهار الكاميرا
+    cameraIcon.style.display = 'flex';
+    
+    // إزالة أي مستمعات قديمة
     const newIcon = cameraIcon.cloneNode(true);
     cameraIcon.parentNode.replaceChild(newIcon, cameraIcon);
-
-    // إظهار الأيقونة
-    newIcon.style.display = 'flex';
-    newIcon.style.opacity = '1';
-    newIcon.style.visibility = 'visible';
-    newIcon.style.pointerEvents = 'auto';
-
-    // إضافة حدث النقر
+    
+    // إضافة مستمع جديد
     newIcon.addEventListener('click', async function(e) {
       e.preventDefault();
       e.stopPropagation();
@@ -515,134 +468,84 @@
       this.style.opacity = '0.5';
       
       try {
-        // تشغيل تأثير الكاميرا
-        showFlashEffect();
+        // تأثير الفلاش
+        flash();
+        
+        // انتظار لحظة
+        await new Promise(r => setTimeout(r, 50));
         
         // التقاط الصورة
-        const imageDataUrl = await captureVillaSnapshot();
-        
-        // إنشاء اسم ملف بالتاريخ
-        const now = new Date();
-        const timestamp = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}-${now.getMinutes().toString().padStart(2,'0')}-${now.getSeconds().toString().padStart(2,'0')}`;
+        const imgData = await captureSnapshot();
         
         // تحميل الصورة
         const link = document.createElement('a');
-        link.href = imageDataUrl;
-        link.download = `Villa-Snapshot-${timestamp}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        link.href = imgData;
         
-        // رسالة نجاح
-        showMessage('✅ تم التقاط الصورة بنجاح!', true);
+        // اسم الملف بالتاريخ
+        const now = new Date();
+        const date = `${now.getFullYear()}-${(now.getMonth()+1)}-${now.getDate()}`;
+        const time = `${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
+        link.download = `Villa-${date}-${time}.png`;
+        
+        link.click();
+        
+        showMsg('✅ تم التقاط الصورة');
         
       } catch (error) {
-        console.error('❌ فشل التصوير:', error);
-        showMessage('❌ فشل التصوير، حاول مرة أخرى', false);
+        console.error('خطأ:', error);
+        showMsg('❌ فشل التصوير', false);
       } finally {
-        // إعادة تفعيل الأيقونة
+        // إعادة تفعيل
         setTimeout(() => {
           newIcon.style.pointerEvents = 'auto';
           newIcon.style.opacity = '1';
         }, 1000);
       }
     });
-
-    console.log('✅ نظام الكاميرا جاهز للعمل');
+    
+    console.log('✅ الكاميرا جاهزة');
   }
 
-  // دالة إنشاء أيقونة الكاميرا إذا لم تكن موجودة
-  function createCameraIcon() {
-    if (document.getElementById('cameraIconButton')) return;
-    
-    const cameraDiv = document.createElement('div');
-    cameraDiv.id = 'cameraIconButton';
-    cameraDiv.style.cssText = `
-      position: fixed;
-      bottom: 30px;
-      right: 140px;
-      width: 80px;
-      height: 105px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 10000;
-      background: transparent;
-      border: none;
-      transition: transform 0.2s ease;
-    `;
-    
-    const img = document.createElement('img');
-    img.src = 'img/camera-icon.png';
-    img.alt = 'Camera';
-    img.style.cssText = `
-      width: 60px;
-      height: 60px;
-      object-fit: contain;
-      display: block;
-    `;
-    
-    cameraDiv.appendChild(img);
-    
-    // إضافة النص
-    const text = document.createElement('span');
-    text.textContent = 'CAMERA';
-    text.style.cssText = `
-      color: white;
-      font-size: 14px;
-      font-weight: 600;
-      margin-top: 4px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-      letter-spacing: 1px;
-      background: rgba(0,0,0,0.6);
-      padding: 4px 12px;
-      border-radius: 20px;
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(255,255,255,0.3);
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-    `;
-    cameraDiv.appendChild(text);
-    
-    document.body.appendChild(cameraDiv);
-    console.log('✅ تم إنشاء أيقونة الكاميرا تلقائياً');
-  }
-
-  // تشغيل الكاميرا عند بدء الجولة
-  function startCameraWhenReady() {
-    // فحص إذا كانت الجولة بدأت
-    const checkInterval = setInterval(() => {
-      const panoCanvas = document.querySelector('#pano canvas');
-      const panoStyle = document.getElementById('pano')?.style;
+  // مراقب لدخول الجولة
+  function watchForTourStart() {
+    // الطريقة الأولى: مراقبة تغيير display
+    const observer = new MutationObserver(() => {
+      const introVideo = document.getElementById('introVideo');
+      const introImage = document.getElementById('introImage');
       
-      if (panoCanvas && panoCanvas.width > 0 && panoStyle?.display !== 'none') {
-        clearInterval(checkInterval);
-        setTimeout(initCameraIcon, 1000);
+      if ((introVideo && introVideo.style.display === 'none') && 
+          (introImage && introImage.style.display === 'none')) {
+        // الجولة بدأت
+        setTimeout(enableCamera, 1500);
+        observer.disconnect();
       }
-    }, 500);
-
-    setTimeout(() => clearInterval(checkInterval), 15000);
-  }
-
-  // ربط بكل طرق بدء الجولة
-  document.addEventListener('DOMContentLoaded', startCameraWhenReady);
-
-  // ربط بـ startTour
-  const originalStartTour = window.startTour;
-  window.startTour = function() {
-    if (originalStartTour) originalStartTour();
-    setTimeout(initCameraIcon, 2000);
-  };
-
-  // ربط بزر الدخول
-  const enterBtn = document.getElementById('enterTour');
-  if (enterBtn) {
-    enterBtn.addEventListener('click', () => {
-      setTimeout(initCameraIcon, 2000);
     });
+    
+    observer.observe(document.body, { 
+      attributes: true, 
+      subtree: true,
+      attributeFilter: ['style', 'display'] 
+    });
+    
+    // الطريقة الثانية: ربط بزر الدخول
+    const enterBtn = document.getElementById('enterTour');
+    if (enterBtn) {
+      enterBtn.addEventListener('click', () => {
+        setTimeout(enableCamera, 2000);
+      });
+    }
+    
+    // الطريقة الثالثة: ربط بـ startTour
+    const originalStart = window.startTour;
+    window.startTour = function() {
+      if (originalStart) originalStart();
+      setTimeout(enableCamera, 2000);
+    };
   }
-})();
+
+  // تشغيل المراقب
+  document.addEventListener('DOMContentLoaded', watchForTourStart);
+
 })();
 
 /* ========== FLOOR PLAN MODULE ========== */
