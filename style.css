@@ -1037,48 +1037,57 @@ body.view-control-buttons .viewControlButton {
     right: 5px;
   }
 }
-/* ===== مؤشرات الطوابق - نسخة قوية ===== */
+/* ===== مؤشرات المخططات (GROUND FLOOR, FIRST FLOOR, SECOND FLOOR) ===== */
 .floorplan-indicators {
-  display: flex !important;
-  justify-content: space-around !important;  /* توزيع متساوي */
+  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 50px !important;  /* مسافة كبيرة */
-  margin: 30px 0 !important;
-  padding: 15px 30px !important;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 60px;
+  gap: 25px;
+  margin-top: 25px;
+  padding: 15px 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50px;
   flex-wrap: wrap;
 }
 
 .floorplan-indicators .indicator {
-  color: white !important;
-  font-size: 18px !important;
-  font-weight: bold !important;
-  padding: 12px 35px !important;  /* مسافة داخلية كبيرة */
-  border-radius: 50px !important;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+  font-weight: 600;
+  padding: 8px 25px;
+  border-radius: 30px;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.15) !important;
-  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
   letter-spacing: 1px;
   white-space: nowrap;
-  margin: 0 15px !important;  /* مسافة خارجية */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.floorplan-indicators .indicator:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
 }
 
 .floorplan-indicators .indicator.active {
-  background: #007bff !important;
-  border-color: #007bff !important;
-  color: white !important;
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+  box-shadow: 0 5px 20px rgba(0, 123, 255, 0.5);
 }
 
-/* للشاشات الصغيرة */
-@media (max-width: 700px) {
+/* تحسين للشاشات الصغيرة */
+@media (max-width: 600px) {
   .floorplan-indicators {
-    gap: 20px !important;
+    gap: 10px;
+    padding: 12px 8px;
   }
   
   .floorplan-indicators .indicator {
-    font-size: 14px !important;
-    padding: 8px 20px !important;
+    font-size: 12px;
+    padding: 6px 12px;
   }
 }
