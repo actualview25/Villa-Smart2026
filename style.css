@@ -1020,28 +1020,70 @@ body.view-control-buttons .viewControlButton {
     right: 5px;
   }
 }
-/* ===== أيقونة الكاميرا ===== */
+/* ===== أيقونة الكاميرا - بنفس تنسيق أيقونة المخططات ===== */
 #cameraIconButton {
   position: fixed;
-  bottom: 20px;        /* المسافة من أسفل الشاشة */
-  right: 120px;        /* على يسار أيقونة المخطط */
-  width: 50px;
-  height: 50px;
-  z-index: 10010;      /* فوق جميع عناصر الجولة */
-  display: none;       /* تظهر عند بدء الجولة */
+  bottom: 30px;
+  right: 140px; /* بجانب أيقونة المخططات */
+  width: 80px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  background: rgba(0,0,0,0.4);
-  border-radius: 8px;
-  padding: 5px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  z-index: 10000;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  transition: transform 0.2s ease;
+}
+
+#cameraIconButton:hover {
+  transform: scale(1.1);
 }
 
 #cameraIconButton img {
-  width: 100%;
-  height: 100%;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
+  display: block;
 }
-#cameraIconButton:hover {
-  transform: scale(1.1);
-  transition: all 0.3s ease;
+
+/* لإضافة نص تحت الأيقونة - اختياري */
+#cameraIconButton::after {
+  content: "CAMERA";
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 4px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  letter-spacing: 1px;
+  background: rgba(0,0,0,0.6);
+  padding: 4px 12px;
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.3);
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* تحريك النص لأسفل قليلاً */
+#cameraIconButton {
+  padding-bottom: 25px; /* يخلق مساحة للنص */
+}
+
+/* تعديل مكان الأيقونة على الشاشات الصغيرة */
+@media (max-width: 600px) {
+  #cameraIconButton {
+    bottom: 20px;
+    right: 120px;
+    width: 70px;
+    height: 70px;
+  }
+  
+  #cameraIconButton img {
+    width: 50px;
+    height: 50px;
+  }
 }
