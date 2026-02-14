@@ -1037,51 +1037,48 @@ body.view-control-buttons .viewControlButton {
     right: 5px;
   }
 }
-/* ===== تعديل مؤشرات الطوابق (GROUND FLOOR, FIRST FLOOR, SECOND FLOOR) ===== */
+/* ===== مؤشرات الطوابق - نسخة قوية ===== */
 .floorplan-indicators {
-  display: flex;
-  justify-content: center;
+  display: flex !important;
+  justify-content: space-around !important;  /* توزيع متساوي */
   align-items: center;
-  gap: 30px;  /* المسافة بين المؤشرات */
-  margin-top: 25px;
-  padding: 10px 20px;
+  gap: 50px !important;  /* مسافة كبيرة */
+  margin: 30px 0 !important;
+  padding: 15px 30px !important;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 60px;
   flex-wrap: wrap;
 }
 
 .floorplan-indicators .indicator {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 16px;
-  font-weight: 600;
-  padding: 10px 25px;
-  border-radius: 30px;
+  color: white !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  padding: 12px 35px !important;  /* مسافة داخلية كبيرة */
+  border-radius: 50px !important;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
   transition: all 0.3s ease;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   white-space: nowrap;
-}
-
-.floorplan-indicators .indicator:hover {
-  background: rgba(255, 255, 255, 0.25);
-  color: white;
-  border-color: rgba(255, 255, 255, 0.5);
+  margin: 0 15px !important;  /* مسافة خارجية */
 }
 
 .floorplan-indicators .indicator.active {
-  background: #0066ff;
-  color: white;
-  border-color: #0066ff;
+  background: #007bff !important;
+  border-color: #007bff !important;
+  color: white !important;
 }
 
 /* للشاشات الصغيرة */
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .floorplan-indicators {
-    gap: 15px;
+    gap: 20px !important;
   }
   
   .floorplan-indicators .indicator {
-    font-size: 14px;
-    padding: 8px 16px;
+    font-size: 14px !important;
+    padding: 8px 20px !important;
   }
 }
