@@ -1020,3 +1020,51 @@ body.view-control-buttons .viewControlButton {
     right: 5px;
   }
 }
+/* ===== تعديل مؤشرات الطوابق (GROUND FLOOR, FIRST FLOOR, SECOND FLOOR) ===== */
+.floorplan-indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;  /* المسافة بين المؤشرات */
+  margin-top: 25px;
+  padding: 10px 20px;
+  flex-wrap: wrap;
+}
+
+.floorplan-indicators .indicator {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px 25px;
+  border-radius: 30px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.floorplan-indicators .indicator:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.floorplan-indicators .indicator.active {
+  background: #0066ff;
+  color: white;
+  border-color: #0066ff;
+}
+
+/* للشاشات الصغيرة */
+@media (max-width: 600px) {
+  .floorplan-indicators {
+    gap: 15px;
+  }
+  
+  .floorplan-indicators .indicator {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+}
