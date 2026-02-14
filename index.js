@@ -364,28 +364,285 @@
   window.startTour = function () {
     switchScene(scenes[0]);
   };
-// ===== تفعيل أيقونة الكاميرا بعد بدء الجولة =====
-setTimeout(function() {
-  var cameraIcon = document.getElementById('cameraIconButton');
-  if (cameraIcon) {
-    cameraIcon.style.display = 'flex'; // ظهور الأيقونة
-    
-    cameraIcon.addEventListener('click', function() {
-      var canvas = document.querySelector('#pano canvas');
-      if (!canvas) return;
+// ===== نظام الكاميرا المتطور =====
+(function() {
+  'use strict';
+  
+  // دالة متقدمة لالتقاط الصورة
+  function captureVillaSnapshot() {
+    return new Promise((resolve, reject) => {
+      try {
+        // البحث عن canvas
+        const canvas = document.querySelector('#pano canvas');
+        if (!canvas) {
+          reject('لم يتم العثور على canvas');
+          return;
+        }
 
-      var imageData = canvas.toDataURL('image/png');
-      var link = document.createElement('a');
-      link.href = imageData;
-      link.download = 'snapshot.png';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      console.log('✅ تم التقاط الصورة 2D بدون إطار أو شعار');
+        // محاولة الحصول على WebGL context
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        
+        if (gl && canvas.width > 0 && canvas.height > 0) {
+          // طريقة WebGL عالية الجودة
+          const width = canvas.width;
+          const height = canvas.height;
+          
+          const pixels = new Uint8Array(width * height * 4);
+          gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+          
+          const tempCanvas = document.createElement('canvas');
+          tempCanvas.width = width;
+          tempCanvas.height = height;
+          const ctx = tempCanvas.getContext('2d');
+          
+          const imageData = ctx.createImageData(width, height);
+          
+          // عكس الصورة (readPixels يقرأ من الأسفل)
+          for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+              const sourceIndex = (y * width + x) * 4;
+              const targetIndex = ((height - 1 - y) * width + x) * 4;
+              
+              imageData.data[targetIndex] = pixels[sourceIndex];
+              imageData.data[targetIndex + 1] = pixels[sourceIndex + 1];
+              imageData.data[targetIndex + 2] = pixels[sourceIndex + 2];
+              imageData.data[targetIndex + 3] = pixels[sourceIndex + 3];
+            }
+          }
+          
+          ctx.putImageData(imageData, 0, 0);
+          resolve(tempCanvas.toDataURL('image/png'));
+          
+        } else {
+          // الطريقة البديلة
+          resolve(canvas.toDataURL('image/png'));
+        }
+      } catch (error) {
+        console.error('خطأ في التقاط الصورة:', error);
+        reject(error);
+      }
     });
   }
-}, 800); // تأخير بسيط حتى يجهز Marzipano
+
+  // دالة عرض تأثير الفلاش
+  function showFlashEffect() {
+    const flash = document.createElement('div');
+    flash.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      opacity: 0;
+      z-index: 999999;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    `;
+    document.body.appendChild(flash);
+    
+    requestAnimationFrame(() => {
+      flash.style.opacity = '0.7';
+      setTimeout(() => {
+        flash.style.opacity = '0';
+        setTimeout(() => {
+          if (flash.parentNode) flash.parentNode.removeChild(flash);
+        }, 300);
+      }, 100);
+    });
+  }
+
+  // دالة عرض رسالة منبثقة
+  function showMessage(text, isSuccess = true) {
+    const msg = document.createElement('div');
+    msg.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: ${isSuccess ? 'rgba(0, 150, 0, 0.9)' : 'rgba(200, 0, 0, 0.9)'};
+      color: white;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: bold;
+      z-index: 999999;
+      box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      border: 2px solid white;
+      animation: msgAppear 0.3s;
+    `;
+    msg.textContent = text;
+    document.body.appendChild(msg);
+    
+    setTimeout(() => {
+      msg.style.opacity = '0';
+      msg.style.transition = 'opacity 0.5s';
+      setTimeout(() => {
+        if (msg.parentNode) msg.parentNode.removeChild(msg);
+      }, 500);
+    }, 2000);
+  }
+
+  // دالة تفعيل الكاميرا
+  function initCameraIcon() {
+    const cameraIcon = document.getElementById('cameraIconButton');
+    if (!cameraIcon) {
+      console.error('❌ أيقونة الكاميرا غير موجودة في HTML');
+      
+      // محاولة إنشاء الأيقونة إذا لم تكن موجودة
+      createCameraIcon();
+      return;
+    }
+
+    // تنظيف المستمعات القديمة
+    const newIcon = cameraIcon.cloneNode(true);
+    cameraIcon.parentNode.replaceChild(newIcon, cameraIcon);
+
+    // إظهار الأيقونة
+    newIcon.style.display = 'flex';
+    newIcon.style.opacity = '1';
+    newIcon.style.visibility = 'visible';
+    newIcon.style.pointerEvents = 'auto';
+
+    // إضافة حدث النقر
+    newIcon.addEventListener('click', async function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // تعطيل مؤقت
+      this.style.pointerEvents = 'none';
+      this.style.opacity = '0.5';
+      
+      try {
+        // تشغيل تأثير الكاميرا
+        showFlashEffect();
+        
+        // التقاط الصورة
+        const imageDataUrl = await captureVillaSnapshot();
+        
+        // إنشاء اسم ملف بالتاريخ
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}-${now.getMinutes().toString().padStart(2,'0')}-${now.getSeconds().toString().padStart(2,'0')}`;
+        
+        // تحميل الصورة
+        const link = document.createElement('a');
+        link.href = imageDataUrl;
+        link.download = `Villa-Snapshot-${timestamp}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // رسالة نجاح
+        showMessage('✅ تم التقاط الصورة بنجاح!', true);
+        
+      } catch (error) {
+        console.error('❌ فشل التصوير:', error);
+        showMessage('❌ فشل التصوير، حاول مرة أخرى', false);
+      } finally {
+        // إعادة تفعيل الأيقونة
+        setTimeout(() => {
+          newIcon.style.pointerEvents = 'auto';
+          newIcon.style.opacity = '1';
+        }, 1000);
+      }
+    });
+
+    console.log('✅ نظام الكاميرا جاهز للعمل');
+  }
+
+  // دالة إنشاء أيقونة الكاميرا إذا لم تكن موجودة
+  function createCameraIcon() {
+    if (document.getElementById('cameraIconButton')) return;
+    
+    const cameraDiv = document.createElement('div');
+    cameraDiv.id = 'cameraIconButton';
+    cameraDiv.style.cssText = `
+      position: fixed;
+      bottom: 30px;
+      right: 140px;
+      width: 80px;
+      height: 105px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10000;
+      background: transparent;
+      border: none;
+      transition: transform 0.2s ease;
+    `;
+    
+    const img = document.createElement('img');
+    img.src = 'img/camera-icon.png';
+    img.alt = 'Camera';
+    img.style.cssText = `
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      display: block;
+    `;
+    
+    cameraDiv.appendChild(img);
+    
+    // إضافة النص
+    const text = document.createElement('span');
+    text.textContent = 'CAMERA';
+    text.style.cssText = `
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 4px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      letter-spacing: 1px;
+      background: rgba(0,0,0,0.6);
+      padding: 4px 12px;
+      border-radius: 20px;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.3);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    `;
+    cameraDiv.appendChild(text);
+    
+    document.body.appendChild(cameraDiv);
+    console.log('✅ تم إنشاء أيقونة الكاميرا تلقائياً');
+  }
+
+  // تشغيل الكاميرا عند بدء الجولة
+  function startCameraWhenReady() {
+    // فحص إذا كانت الجولة بدأت
+    const checkInterval = setInterval(() => {
+      const panoCanvas = document.querySelector('#pano canvas');
+      const panoStyle = document.getElementById('pano')?.style;
+      
+      if (panoCanvas && panoCanvas.width > 0 && panoStyle?.display !== 'none') {
+        clearInterval(checkInterval);
+        setTimeout(initCameraIcon, 1000);
+      }
+    }, 500);
+
+    setTimeout(() => clearInterval(checkInterval), 15000);
+  }
+
+  // ربط بكل طرق بدء الجولة
+  document.addEventListener('DOMContentLoaded', startCameraWhenReady);
+
+  // ربط بـ startTour
+  const originalStartTour = window.startTour;
+  window.startTour = function() {
+    if (originalStartTour) originalStartTour();
+    setTimeout(initCameraIcon, 2000);
+  };
+
+  // ربط بزر الدخول
+  const enterBtn = document.getElementById('enterTour');
+  if (enterBtn) {
+    enterBtn.addEventListener('click', () => {
+      setTimeout(initCameraIcon, 2000);
+    });
+  }
+})();
 })();
 
 /* ========== FLOOR PLAN MODULE ========== */
