@@ -386,7 +386,6 @@ setTimeout(function() {
     });
   }
 }, 800); // تأخير بسيط حتى يجهز Marzipano
-
 })();
 
 /* ========== FLOOR PLAN MODULE ========== */
