@@ -364,6 +364,9 @@
   window.startTour = function () {
     switchScene(scenes[0]);
   };
+
+})();
+
 /* ========== FLOOR PLAN MODULE ========== */
 (function() {
   'use strict';
@@ -485,125 +488,88 @@
   });
 
 })();
-// <-- تأكد أن الملف ينتهي هنا
-/* ========== FLOOR PLAN MODULE ========== */
+
+/* ========== PLATFORM LOGO POSITION FIX ========== */
 (function() {
   'use strict';
-
-  document.addEventListener('DOMContentLoaded', function() {
+  
+  // دالة تثبيت الشعار في المكان الصحيح
+  function fixLogoPosition() {
+    var logo = document.getElementById('platformLogo');
+    if (!logo) return;
     
-    var modal = document.getElementById('floorPlanModal');
-    var mapIcon = document.getElementById('mapIconButton');
-    var modalImg = document.getElementById('currentFloorPlanImg');
-    var prevBtn = document.getElementById('prevPlanBtn');
-    var nextBtn = document.getElementById('nextPlanBtn');
-    var indicators = document.querySelectorAll('.indicator');
-    var downloadBtn = document.getElementById('downloadPlanBtn');
-
-    if (!modal || !mapIcon || !modalImg) {
-      return;
+    // إظهار الشعار
+    logo.style.display = 'block';
+    
+    // تطبيق التنسيقات الصحيحة - تحت الإطار العلوي
+    logo.style.position = 'fixed';
+    logo.style.top = '70px';  // تحت الإطار العلوي (الإطار 40px + مسافة)
+    logo.style.right = '30px';
+    logo.style.left = 'auto';
+    logo.style.bottom = 'auto';
+    logo.style.zIndex = '9000';  // تحت أزرار التحكم (10000) لكن فوق المحتوى
+    logo.style.textAlign = 'right';
+    logo.style.background = 'transparent';
+    logo.style.padding = '0';
+    logo.style.margin = '0';
+    
+    // تنسيق النصوص (الحفاظ على التصميم الجميل)
+    var logoText = document.getElementById('logoText');
+    var logoSubtext = document.getElementById('logoSubtext');
+    
+    if (logoText) {
+      logoText.style.color = 'white';
+      logoText.style.fontSize = '24px';
+      logoText.style.fontWeight = 'bold';
+      logoText.style.fontFamily = '"Helvetica Neue", Arial, sans-serif';
+      logoText.style.textShadow = '0 2px 10px rgba(0,0,0,0.5)';
+      logoText.style.letterSpacing = '1px';
+      logoText.style.lineHeight = '1.2';
     }
-
-    var floorPlans = [
-      { src: 'img/Ground-floor.png', name: 'Ground-floor', title: 'GROUND FLOOR' },
-      { src: 'img/First-floor.png', name: 'First-floor', title: 'FIRST FLOOR' },
-      { src: 'img/Second-floor.png', name: 'Second-floor', title: 'SECOND FLOOR' }
-    ];
-
-    var currentIndex = 0;
-
-    function openModal(e) {
-      if (e) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-      modal.classList.add('show');
+    
+    if (logoSubtext) {
+      logoSubtext.style.color = 'rgba(255,255,255,0.9)';
+      logoSubtext.style.fontSize = '14px';
+      logoSubtext.style.fontWeight = '500';
+      logoSubtext.style.fontFamily = '"Helvetica Neue", Arial, sans-serif';
+      logoSubtext.style.textShadow = '0 2px 8px rgba(0,0,0,0.5)';
+      logoSubtext.style.letterSpacing = '2px';
+      logoSubtext.style.marginTop = '4px';
     }
-
-    function closeModal() {
-      modal.classList.remove('show');
-    }
-
-    if (!('ontouchstart' in window)) {
-      mapIcon.addEventListener('mouseenter', openModal);
-    } else {
-      mapIcon.addEventListener('click', openModal);
-    }
-
-    modal.addEventListener('click', function(e) {
-      if (e.target === modal) {
-        closeModal();
-      }
-    });
-
-    var modalContent = document.querySelector('.floorplan-modal-content');
-    if (modalContent) {
-      modalContent.addEventListener('click', function(e) {
-        e.stopPropagation();
+    
+    console.log('✅ Logo positioned at top:70px, right:30px');
+  }
+  
+  // ربط إظهار الشعار ببدء الجولة
+  var originalStart = window.startTour;
+  window.startTour = function() {
+    if (originalStart) originalStart();
+    setTimeout(fixLogoPosition, 500);
+  };
+  
+  // ربط بالضغط على Enter
+  document.addEventListener('DOMContentLoaded', function() {
+    var enterBtn = document.getElementById('enterTour');
+    if (enterBtn) {
+      enterBtn.addEventListener('click', function() {
+        setTimeout(fixLogoPosition, 800);
       });
     }
-
-    var closeBtn = document.getElementById('closeModalBtn');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        closeModal();
-      });
-    }
-
-    function updateFloorPlan(index) {
-      if (index < 0) index = floorPlans.length - 1;
-      if (index >= floorPlans.length) index = 0;
-      
-      currentIndex = index;
-      
-      modalImg.src = floorPlans[index].src;
-      modalImg.alt = floorPlans[index].title;
-
-      for (var i = 0; i < indicators.length; i++) {
-        if (i === index) {
-          indicators[i].classList.add('active');
-        } else {
-          indicators[i].classList.remove('active');
-        }
-      }
-    }
-
-    if (prevBtn) {
-      prevBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        updateFloorPlan(currentIndex - 1);
-      });
-    }
-
-    if (nextBtn) {
-      nextBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        updateFloorPlan(currentIndex + 1);
-      });
-    }
-
-    for (var i = 0; i < indicators.length; i++) {
-      indicators[i].addEventListener('click', function(e) {
-        e.stopPropagation();
-        var index = parseInt(this.getAttribute('data-index'));
-        updateFloorPlan(index);
-      });
-    }
-
-    if (downloadBtn) {
-      downloadBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        var link = document.createElement('a');
-        link.href = floorPlans[currentIndex].src;
-        link.download = floorPlans[currentIndex].name + '.png';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      });
-    }
-
-    updateFloorPlan(0);
   });
-
+  
+  // مراقب للتأكد من بقاء الشعار في مكانه
+  var observer = new MutationObserver(function() {
+    var logo = document.getElementById('platformLogo');
+    if (logo && logo.style.display === 'block') {
+      logo.style.top = '70px';
+      logo.style.right = '30px';
+    }
+  });
+  
+  observer.observe(document.body, {
+    attributes: true,
+    childList: true,
+    subtree: true
+  });
+  
 })();
