@@ -364,33 +364,29 @@
   window.startTour = function () {
     switchScene(scenes[0]);
   };
-// ===== تفعيل أيقونة الكاميرا =====
-var cameraIcon = document.getElementById('cameraIconButton');
-if (cameraIcon) {
-  // عرض الأيقونة عند بدء الجولة
-  cameraIcon.style.display = 'flex';
+// ===== تفعيل أيقونة الكاميرا بعد بدء الجولة =====
+setTimeout(function() {
+  var cameraIcon = document.getElementById('cameraIconButton');
+  if (cameraIcon) {
+    cameraIcon.style.display = 'flex'; // ظهور الأيقونة
+    
+    cameraIcon.addEventListener('click', function() {
+      var canvas = document.querySelector('#pano canvas');
+      if (!canvas) return;
 
-  // وظيفة الضغط على الأيقونة لالتقاط صورة 2D
-  cameraIcon.addEventListener('click', function() {
-    if (!viewer) return;
+      var imageData = canvas.toDataURL('image/png');
+      var link = document.createElement('a');
+      link.href = imageData;
+      link.download = 'snapshot.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-    // التقاط الصورة الحالية للـ canvas
-    var canvas = panoElement.querySelector('canvas');
-    if (!canvas) return;
+      console.log('✅ تم التقاط الصورة 2D بدون إطار أو شعار');
+    });
+  }
+}, 800); // تأخير بسيط حتى يجهز Marzipano
 
-    var imageData = canvas.toDataURL('image/png');
-
-    // إنشاء رابط التحميل
-    var link = document.createElement('a');
-    link.href = imageData;
-    link.download = 'snapshot.png';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    console.log('✅ تم التقاط الصورة 2D بدون إطار أو شعار');
-  });
-}
 })();
 
 /* ========== FLOOR PLAN MODULE ========== */
