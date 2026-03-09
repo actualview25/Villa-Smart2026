@@ -1136,3 +1136,350 @@ border:1px solid rgba(255,255,255,0.6);
   50% { transform: scale(1.05); }
   100% { transform: scale(1); }
 }
+/* ===== التعديلات الجديدة: واجهة شفافة ضبابية (Glassmorphism) ===== */
+
+/* 1. شريط العنوان العلوي - شفاف ضبابي */
+#titleBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 40px;
+  height: 60px; /* زيادة الارتفاع قليلاً */
+  text-align: center;
+  background: rgba(20,30,40,0.35); /* لون شفاف أنيق */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(74,108,143,0.25);
+  z-index: 9500;
+  pointer-events: none; /* للسماح بالنقر من خلاله إذا لزم الأمر */
+}
+
+#titleBar .sceneName {
+  width: 100%;
+  height: 100%;
+  line-height: 60px; /* تعديل ليتناسب مع الارتفاع الجديد */
+  padding: 0 20px;
+  background: transparent; /* إزالة الخلفية السوداء */
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -moz-user-select: text;
+  -webkit-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* 2. أزرار التحكم العلوية - شفافة ضبابية */
+#autorotateToggle,
+#fullscreenToggle,
+#sceneListToggle {
+  display: block;
+  position: absolute;
+  top: 0;
+  width: 60px;
+  height: 60px;
+  padding: 15px;
+  background: transparent !important; /* إلغاء الخلفية السوداء */
+  z-index: 10000;
+  pointer-events: auto;
+}
+
+#autorotateToggle { right: 0; }
+#fullscreenToggle { right: 60px; }
+#sceneListToggle { left: 0; }
+
+/* خلفية شفافة ضبابية للأزرار */
+#autorotateToggle::before,
+#fullscreenToggle::before,
+#sceneListToggle::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  background: rgba(20,30,40,0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 50%;
+  border: 1px solid rgba(74,108,143,0.3);
+  z-index: -1;
+}
+
+#autorotateToggle .icon,
+#fullscreenToggle .icon,
+#sceneListToggle .icon {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 30px;
+  height: 30px;
+  filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+}
+
+/* 3. أزرار التحكم السفلية (View Controls) - شفافة ضبابية */
+.viewControlButton {
+  display: none;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  padding: 10px;
+  background: transparent;
+  z-index: 9500;
+}
+
+.viewControlButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(20,30,40,0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 50%;
+  border: 1px solid rgba(74,108,143,0.3);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.viewControlButton .icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 30px;
+  height: 30px;
+  filter: brightness(0) invert(1) drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+}
+
+/* تعديل المواضع للأزرار السفلية */
+.viewControlButton-1 { margin-left: -165px; }
+.viewControlButton-2 { margin-left: -105px; }
+.viewControlButton-3 { margin-left: -45px; }
+.viewControlButton-4 { margin-left: 15px; }
+.viewControlButton-5 { margin-left: 75px; }
+.viewControlButton-6 { margin-left: 135px; }
+
+/* 4. قائمة المشاهد الجانبية - شفافة ضبابية */
+#sceneList {
+  position: absolute;
+  top: 80px; /* تحت الشريط العلوي مباشرة */
+  left: -260px;
+  width: 260px;
+  max-height: calc(100% - 100px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin-left: 0;
+  -webkit-transition: margin-left 0.4s ease-in-out;
+  transition: margin-left 0.4s ease-in-out;
+  z-index: 9000;
+  border-radius: 0 12px 12px 0;
+  pointer-events: none;
+}
+
+#sceneList.enabled {
+  margin-left: 260px;
+  pointer-events: auto;
+}
+
+#sceneList .scenes {
+  width: 100%;
+  background: rgba(20,30,40,0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(74,108,143,0.25);
+  border-left: none;
+  border-radius: 0 12px 12px 0;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+#sceneList .scene {
+  display: block;
+  width: 100%;
+  height: 45px;
+  border-bottom: 1px solid rgba(74,108,143,0.15);
+}
+
+#sceneList .scene:last-child {
+  border-bottom: none;
+}
+
+#sceneList .scene .text {
+  width: 100%;
+  height: 100%;
+  padding: 0 20px;
+  line-height: 45px;
+  color: rgba(255,255,255,0.9);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  transition: all 0.2s;
+}
+
+#sceneList .scene:hover .text {
+  background: rgba(74,108,143,0.2);
+  color: white;
+  padding-left: 25px;
+}
+
+#sceneList .scene.current .text {
+  background: rgba(74,108,143,0.3);
+  color: white;
+  border-right: 4px solid #88aaff;
+}
+
+/* 5. أيقونة المخططات (MAP) - تحسين المظهر */
+#mapIconButton {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10000;
+  background: rgba(20,30,40,0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(74,108,143,0.4);
+  border-radius: 50%;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease, background 0.2s;
+}
+
+#mapIconButton:hover {
+  transform: scale(1.1);
+  background: rgba(30,40,55,0.45);
+  border-color: rgba(74,108,143,0.6);
+}
+
+#mapIconImg {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  display: block;
+  filter: brightness(0) invert(1);
+}
+
+.map-icon-text {
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 2px;
+  letter-spacing: 0.5px;
+  background: transparent;
+  padding: 0;
+  border: none;
+  backdrop-filter: none;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+/* 6. الشعار - تعديل ليكون بسطر واحد */
+#platformLogo {
+  position: fixed !important;
+  top: 15px !important; /* تعديل ليكون داخل الشريط العلوي */
+  right: 120px !important; /* بجانب الأزرار */
+  left: auto !important;
+  bottom: auto !important;
+  z-index: 10001 !important;
+  display: none;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  text-align: right;
+  pointer-events: none;
+}
+
+#logoText {
+  color: white !important;
+  font-size: 18px !important; /* تصغير الخط */
+  font-weight: 600 !important;
+  font-family: 'Helvetica Neue', Arial, sans-serif !important;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+  letter-spacing: 0.5px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important; /* منع النزول لسطر جديد */
+}
+
+#logoSubtext {
+  display: none !important; /* إخفاء النص الفرعي مؤقتاً */
+}
+
+/* 7. تحسين للهواتف المحمولة */
+@media (max-width: 768px) {
+  #titleBar { height: 50px; }
+  #titleBar .sceneName { line-height: 50px; font-size: 16px; }
+  
+  #autorotateToggle, #fullscreenToggle, #sceneListToggle {
+    width: 50px;
+    height: 50px;
+  }
+  
+  #autorotateToggle::before, #fullscreenToggle::before, #sceneListToggle::before {
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+  }
+  
+  .viewControlButton {
+    width: 44px;
+    height: 44px;
+    bottom: 15px;
+  }
+  
+  .viewControlButton-1 { margin-left: -145px; }
+  .viewControlButton-2 { margin-left: -95px; }
+  .viewControlButton-3 { margin-left: -45px; }
+  .viewControlButton-4 { margin-left: 5px; }
+  .viewControlButton-5 { margin-left: 55px; }
+  .viewControlButton-6 { margin-left: 105px; }
+  
+  #sceneList { width: 220px; }
+  #sceneList.enabled { margin-left: 220px; }
+  #sceneList .scene { height: 40px; }
+  #sceneList .scene .text { line-height: 40px; }
+  
+  #mapIconButton { width: 60px; height: 60px; }
+  #mapIconImg { width: 28px; height: 28px; }
+  
+  #platformLogo { right: 100px !important; }
+  #logoText { font-size: 16px !important; }
+}
+
+/* 8. النقاط الساخنة (Hotspots) - تحسين المظهر */
+.hotspot-tooltip {
+  background: rgba(20,30,40,0.35) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(74,108,143,0.4) !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+  color: white !important;
+  font-weight: 500 !important;
+}
+
+.info-hotspot .info-hotspot-header {
+  background: rgba(20,30,40,0.35) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(74,108,143,0.3) !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+}
+
+.info-hotspot .info-hotspot-text {
+  background: rgba(20,30,40,0.35) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(74,108,143,0.3) !important;
+}
