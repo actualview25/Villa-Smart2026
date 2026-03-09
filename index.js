@@ -571,5 +571,59 @@
     childList: true,
     subtree: true
   });
+  /* ========== تحديث مظهر الشعار (LOGO) ليكون بسطر واحد ========== */
+(function() {
+  'use strict';
   
+  function updateLogoStyle() {
+    const logo = document.getElementById('platformLogo');
+    const logoText = document.getElementById('logoText');
+    const logoSubtext = document.getElementById('logoSubtext');
+    
+    if (logo) {
+      logo.style.position = 'fixed';
+      logo.style.top = '15px';
+      logo.style.right = '120px';
+      logo.style.background = 'transparent';
+      logo.style.padding = '0';
+      logo.style.zIndex = '10001';
+    }
+    
+    if (logoText) {
+      logoText.style.fontSize = '18px';
+      logoText.style.fontWeight = '600';
+      logoText.style.whiteSpace = 'nowrap';
+      logoText.style.lineHeight = '1';
+    }
+    
+    if (logoSubtext) {
+      // إخفاء النص الفرعي للتبسيط (أو يمكنك دمجه مع النص الرئيسي)
+      logoSubtext.style.display = 'none';
+    }
+  }
+  
+  // تنفيذ التحديث عند ظهور الشعار
+  const originalStart = window.startTour;
+  window.startTour = function() {
+    if (originalStart) originalStart();
+    setTimeout(updateLogoStyle, 600);
+  };
+  
+  // مراقب للتغييرات
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+        const logo = document.getElementById('platformLogo');
+        if (logo && logo.style.display === 'flex') {
+          updateLogoStyle();
+        }
+      }
+    });
+  });
+  
+  const logo = document.getElementById('platformLogo');
+  if (logo) {
+    observer.observe(logo, { attributes: true });
+  }
 })();
+
