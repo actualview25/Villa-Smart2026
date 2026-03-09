@@ -48,31 +48,41 @@ document.addEventListener('DOMContentLoaded', function() {
   const introImage = document.getElementById('introImage');
   const skipVideoBtn = document.getElementById('skipVideoBtn');
 
-  // تأكد أن زر التخطي ظاهر
+  // اجعل زر التخطي ظاهرًا
   if (skipVideoBtn) skipVideoBtn.style.display = 'flex';
 
-  // الدالة التي تعرض الصورة وتخفي الفيديو
   function skipToImage() {
     if (!introVideoElement || !introImage) return;
-    introVideoElement.pause();             // إيقاف الفيديو
-    introVideoElement.currentTime = 0;     // إعادة المؤشر للبداية (لتجنب أي وميض)
-    introVideoElement.style.display = 'none';
-    introImage.style.display = 'block';
+
+    // أوقف الفيديو فورًا
+    introVideoElement.pause();
+
+    // ضع الفيديو في آخر ثانية لضمان عدم ظهور شاشة سوداء
+    introVideoElement.currentTime = introVideoElement.duration - 0.05;
+
+    // استخدم requestAnimationFrame لضمان التطبيق الفوري
+    requestAnimationFrame(() => {
+      introVideoElement.style.display = 'none';
+      introImage.style.display = 'block';
+    });
   }
 
   // عند نهاية الفيديو
   if (introVideoElement) {
     introVideoElement.addEventListener('ended', skipToImage);
-    introVideoElement.addEventListener('click', skipToImage); // النقر على الفيديو للتخطي
   }
 
   // زر التخطي
   if (skipVideoBtn) {
     skipVideoBtn.addEventListener('click', skipToImage);
   }
+
+  // خيار إضافي: النقر على الفيديو نفسه للتخطي
+  if (introVideoElement) {
+    introVideoElement.addEventListener('click', skipToImage);
+  }
 });
 </script>
-
 <!-- Marzipano Container -->
 <div id="pano"></div>
 
