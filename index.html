@@ -268,13 +268,12 @@
       skipVideoBtn.style.display = 'flex';
     }
 
-    // Function to skip video
-    function skipToImage() {
-      introVideoElement.pause();
-      introVideo.style.display = 'none';
-      introImage.style.display = 'block';
-    }
-
+    // بعد انتهاء الفيديو أو تخطيه
+function skipToImage() {
+  introVideoElement.pause();
+  introVideo.style.display = 'none';
+  introImage.style.display = 'block'; // يظهر الصورة الجوية
+}
     // When video ends
     introVideoElement.addEventListener('ended', skipToImage);
 
