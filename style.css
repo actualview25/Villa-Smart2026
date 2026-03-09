@@ -1091,3 +1091,38 @@ body.view-control-buttons .viewControlButton {
     padding: 6px 12px;
   }
 }
+#tourOptions{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+display:flex;
+flex-direction:column;
+gap:20px;
+z-index:10000;
+align-items:center;
+}
+
+.tourBtn{
+padding:16px 40px;
+font-size:22px;
+font-weight:bold;
+border-radius:40px;
+cursor:pointer;
+text-align:center;
+backdrop-filter:blur(10px);
+background:rgba(0,0,0,0.6);
+color:white;
+border:1px solid rgba(255,255,255,0.4);
+transition:0.3s;
+}
+
+.tourBtn:hover{
+transform:scale(1.05);
+background:rgba(0,0,0,0.8);
+}
+
+.pathsTour{
+background:rgba(200,0,0,0.8);
+border:1px solid rgba(255,255,255,0.6);
+}
