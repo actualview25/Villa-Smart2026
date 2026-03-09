@@ -41,46 +41,38 @@
   </div>
 </div>
 
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const introVideoElement = document.getElementById('introVideoElement');
-  const introVideo = document.getElementById('introVideoElement');
   const introImage = document.getElementById('introImage');
   const skipVideoBtn = document.getElementById('skipVideoBtn');
-  const browserTourBtn = document.getElementById('browserTourBtn');
-  const mepTourBtn = document.getElementById('mepTourBtn');
 
-  // Force skip button visible
+  // تأكد أن زر التخطي ظاهر
   if (skipVideoBtn) skipVideoBtn.style.display = 'flex';
 
-  // Function to show intro image
-  function showIntroImage() {
-    introVideo.pause();
-    introVideo.style.display = 'none';
+  // الدالة التي تعرض الصورة وتخفي الفيديو
+  function skipToImage() {
+    if (!introVideoElement || !introImage) return;
+    introVideoElement.pause();             // إيقاف الفيديو
+    introVideoElement.currentTime = 0;     // إعادة المؤشر للبداية (لتجنب أي وميض)
+    introVideoElement.style.display = 'none';
     introImage.style.display = 'block';
   }
 
-  // نهاية الفيديو أو تخطيه
-  introVideoElement.addEventListener('ended', showIntroImage);
-  introVideo.addEventListener('click', showIntroImage);
-  if (skipVideoBtn) skipVideoBtn.addEventListener('click', showIntroImage);
-
-  // أزرار الجولات
-  if (browserTourBtn) {
-    browserTourBtn.addEventListener('click', function() {
-      introImage.style.display = 'none';
-      if (window.startTour) window.startTour(); // جولة Browser
-    });
+  // عند نهاية الفيديو
+  if (introVideoElement) {
+    introVideoElement.addEventListener('ended', skipToImage);
+    introVideoElement.addEventListener('click', skipToImage); // النقر على الفيديو للتخطي
   }
 
-  if (mepTourBtn) {
-    mepTourBtn.addEventListener('click', function() {
-      introImage.style.display = 'none';
-      window.open('https://actualview25.github.io/Paths-System/', '_blank'); // جولة MEP
-    });
+  // زر التخطي
+  if (skipVideoBtn) {
+    skipVideoBtn.addEventListener('click', skipToImage);
   }
 });
 </script>
+
 <!-- Marzipano Container -->
 <div id="pano"></div>
 
@@ -313,11 +305,10 @@ document.addEventListener('DOMContentLoaded', function() {
       skipVideoBtn.style.display = 'flex';
     }
 
-    // بعد انتهاء الفيديو أو تخطيه
 function skipToImage() {
-  introVideoElement.pause();
-  introVideo.style.display = 'none';
-  introImage.style.display = 'block'; // يظهر الصورة الجوية
+  introVideoElement.pause();              // إيقاف الفيديو
+  introVideoElement.style.display = 'none'; // إخفاء الفيديو
+  introImage.style.display = 'block';       // عرض الصورة مباشرة
 }
     // When video ends
     introVideoElement.addEventListener('ended', skipToImage);
