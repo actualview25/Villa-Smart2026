@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ تم الانتقال إلى صورة الخيارات بنجاح.');
   }
 
-  // --- ربط الأحداث ---
+  // --- ربط الأحداث للانتقال إلى الصورة ---
   // 1. عند نهاية الفيديو
   if (introVideoElement) {
     introVideoElement.addEventListener('ended', skipToImage);
@@ -85,8 +85,8 @@ document.addEventListener('DOMContentLoaded', function() {
     introVideoDiv.addEventListener('click', skipToImage);
   }
 
-  // --- بدء الجولة عند النقر على أحد الأزرار ---
-  function startTheTour() {
+  // --- بدء الجولة الحالية (Browser Tour) ---
+  function startBrowserTour() {
     // إخفاء صورة الخيارات
     if (introImageDiv) introImageDiv.style.display = 'none';
 
@@ -116,11 +116,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  // --- فتح الجولة الخارجية (MEP Tour) - الرابط مضاف الآن! ---
+  function startMepTour() {
+    console.log('🚀 جاري فتح جولة MEP...');
+    // فتح الرابط في نفس التبويب
+    window.location.href = 'https://actualview25.github.io/Paths-System/';
+    
+    // إذا كنت تفضل فتحها في تبويب جديد، استخدم السطر التالي بدلاً من السطر أعلاه:
+    // window.open('https://actualview25.github.io/Paths-System/', '_blank');
+  }
+
+  // ربط الأزرار بالدوال الصحيحة
   if (browserTourBtn) {
-      browserTourBtn.addEventListener('click', startTheTour);
+      browserTourBtn.addEventListener('click', startBrowserTour);
   }
   if (mepTourBtn) {
-      mepTourBtn.addEventListener('click', startTheTour);
+      mepTourBtn.addEventListener('click', startMepTour); // الآن هذا الزر سيفتح الرابط
   }
 
 });
