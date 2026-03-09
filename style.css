@@ -1126,3 +1126,13 @@ background:rgba(0,0,0,0.8);
 background:rgba(200,0,0,0.8);
 border:1px solid rgba(255,255,255,0.6);
 }
+.tourOption:hover {
+  animation: pulse 1.5s infinite;
+  box-shadow: 0 0 20px rgba(255,255,255,0.7);
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
