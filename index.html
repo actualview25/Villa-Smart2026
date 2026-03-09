@@ -28,8 +28,6 @@
 </button>
 </div>
 
-<!-- Intro Image -->
-<!-- Intro Image -->
 <!-- Intro Image مع خيارات الجولات -->
 <div id="introImage" style="display: none; position: relative; width: 100%; height: 100%;">
   <div id="tourOptions" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -42,6 +40,47 @@
     </button>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const introVideoElement = document.getElementById('introVideoElement');
+  const introVideo = document.getElementById('introVideoElement');
+  const introImage = document.getElementById('introImage');
+  const skipVideoBtn = document.getElementById('skipVideoBtn');
+  const browserTourBtn = document.getElementById('browserTourBtn');
+  const mepTourBtn = document.getElementById('mepTourBtn');
+
+  // Force skip button visible
+  if (skipVideoBtn) skipVideoBtn.style.display = 'flex';
+
+  // Function to show intro image
+  function showIntroImage() {
+    introVideo.pause();
+    introVideo.style.display = 'none';
+    introImage.style.display = 'block';
+  }
+
+  // نهاية الفيديو أو تخطيه
+  introVideoElement.addEventListener('ended', showIntroImage);
+  introVideo.addEventListener('click', showIntroImage);
+  if (skipVideoBtn) skipVideoBtn.addEventListener('click', showIntroImage);
+
+  // أزرار الجولات
+  if (browserTourBtn) {
+    browserTourBtn.addEventListener('click', function() {
+      introImage.style.display = 'none';
+      if (window.startTour) window.startTour(); // جولة Browser
+    });
+  }
+
+  if (mepTourBtn) {
+    mepTourBtn.addEventListener('click', function() {
+      introImage.style.display = 'none';
+      window.open('https://actualview25.github.io/Paths-System/', '_blank'); // جولة MEP
+    });
+  }
+});
+</script>
 <!-- Marzipano Container -->
 <div id="pano"></div>
 
