@@ -1,5 +1,4 @@
-* {
-  -webkit-box-sizing: border-box;
+-webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   -moz-user-select: none;
@@ -42,44 +41,42 @@ a, a:hover, a:active, a:visited {
   overflow: hidden;
 }
 
+/* ===== شريط العنوان العلوي - شفاف ضبابي ===== */
 #titleBar {
   position: absolute;
   top: 0;
   left: 0;
-  right: 40px;
-  height: 40px;
+  right: 120px; /* مساحة للأزرار */
+  height: 60px;
   text-align: center;
+  background: rgba(20,30,40,0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(74,108,143,0.25);
+  z-index: 9500;
+  pointer-events: none;
+}
+
+body.multiple-scenes #titleBar {
+  left: 0;
 }
 
 .mobile #titleBar {
   height: 50px;
-  right: 50px;
-}
-
-body.fullscreen-enabled #titleBar {
-  right: 80px;
-}
-
-body.fullscreen-enabled.mobile #titleBar {
   right: 100px;
 }
 
-body.multiple-scenes #titleBar {
-  left: 40px;
-}
-
-body.multiple-scenes.mobile #titleBar {
-  left: 50px;
-}
-
-/* ===== TITLE BAR - BLACK TRANSPARENT ===== */
 #titleBar .sceneName {
   width: 100%;
   height: 100%;
-  line-height: 30px;
-  padding: 5px;
-  background-color: rgb(20,20,20);
-  background-color: rgba(0,0,0,0.8);
+  line-height: 60px;
+  padding: 0 20px;
+  background: transparent;
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -90,225 +87,185 @@ body.multiple-scenes.mobile #titleBar {
 }
 
 .mobile #titleBar .sceneName {
-  line-height: 40px;
+  line-height: 50px;
+  font-size: 16px;
 }
 
-/* ===== CONTROL BUTTONS - BLACK BACKGROUND ===== */
-#fullscreenToggle {
-  display: none;
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 40px;
-  height: 40px;
-  padding: 5px;
-  background-color: rgb(30,30,30);
-  background-color: rgba(0,0,0,0.7);
-}
-
-.mobile #fullscreenToggle {
-  width: 50px;
-  height: 50px;
-}
-
-body.fullscreen-enabled #fullscreenToggle {
-  display: block;
-}
-
-#fullscreenToggle .icon {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 30px;
-  height: 30px;
-}
-
-.mobile #fullscreenToggle .icon {
-  top: 10px;
-  right: 10px;
-}
-
-#fullscreenToggle .icon.on {
-  display: none;
-}
-
-#fullscreenToggle .icon.off {
-  display: block;
-}
-
-#fullscreenToggle.enabled .icon.on {
-  display: block;
-}
-
-#fullscreenToggle.enabled .icon.off {
-  display: none;
-}
-
-#autorotateToggle {
-  display: block;
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 40px;
-  height: 40px;
-  padding: 5px;
-  background-color: rgb(30,30,30);
-  background-color: rgba(0,0,0,0.7);
-}
-
-.mobile #autorotateToggle {
-  width: 50px;
-  height: 50px;
-}
-
-body.fullscreen-enabled #autorotateToggle {
-  right: 40px;
-}
-
-body.fullscreen-enabled.mobile #autorotateToggle {
-  right: 50px;
-}
-
-#autorotateToggle .icon {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 30px;
-  height: 30px;
-}
-
-.mobile #autorotateToggle .icon {
-  top: 10px;
-  right: 10px;
-}
-
-#autorotateToggle .icon.on {
-  display: none;
-}
-
-#autorotateToggle .icon.off {
-  display: block;
-}
-
-#autorotateToggle.enabled .icon.on {
-  display: block;
-}
-
-#autorotateToggle.enabled .icon.off {
-  display: none;
-}
-
+/* ===== أزرار التحكم العلوية - شفافة ضبابية ===== */
+#autorotateToggle,
+#fullscreenToggle,
 #sceneListToggle {
+  display: block;
   position: absolute;
   top: 0;
-  left: 0;
-  width: 40px;
-  height: 40px;
-  padding: 5px;
-  background-color: rgb(30,30,30);
-  background-color: rgba(0,0,0,0.7);
+  width: 60px;
+  height: 60px;
+  padding: 15px;
+  background: transparent !important;
+  z-index: 10000;
+  pointer-events: auto;
 }
 
+.mobile #autorotateToggle,
+.mobile #fullscreenToggle,
 .mobile #sceneListToggle {
   width: 50px;
   height: 50px;
+  padding: 10px;
 }
 
-#sceneListToggle .text {
+#autorotateToggle { right: 60px; }
+#fullscreenToggle { right: 0; }
+#sceneListToggle { left: 0; }
+
+body.fullscreen-enabled #autorotateToggle {
+  right: 60px;
+}
+body.fullscreen-enabled #fullscreenToggle {
+  right: 0;
+}
+
+/* خلفية شفافة ضبابية للأزرار */
+#autorotateToggle::before,
+#fullscreenToggle::before,
+#sceneListToggle::before {
+  content: '';
   position: absolute;
-  top: 5px;
-  left: 15px;
-  width: 100%;
-  line-height: 30px;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  background: rgba(20,30,40,0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 50%;
+  border: 1px solid rgba(74,108,143,0.3);
+  z-index: -1;
 }
 
+.mobile #autorotateToggle::before,
+.mobile #fullscreenToggle::before,
+.mobile #sceneListToggle::before {
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+}
+
+#autorotateToggle .icon,
+#fullscreenToggle .icon,
 #sceneListToggle .icon {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 15px;
+  left: 15px;
+  width: 30px;
+  height: 30px;
+  filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+}
+
+.mobile #autorotateToggle .icon,
+.mobile #fullscreenToggle .icon,
+.mobile #sceneListToggle .icon {
+  top: 10px;
+  left: 10px;
   width: 30px;
   height: 30px;
 }
 
-.mobile #sceneListToggle .icon {
-  top: 10px;
-  right: 10px;
-}
-
+#autorotateToggle .icon.on,
+#fullscreenToggle .icon.on,
 #sceneListToggle .icon.on {
   display: none;
 }
 
+#autorotateToggle .icon.off,
+#fullscreenToggle .icon.off,
 #sceneListToggle .icon.off {
   display: block;
 }
 
+#autorotateToggle.enabled .icon.on,
+#fullscreenToggle.enabled .icon.on,
 #sceneListToggle.enabled .icon.on {
   display: block;
 }
 
+#autorotateToggle.enabled .icon.off,
+#fullscreenToggle.enabled .icon.off,
 #sceneListToggle.enabled .icon.off {
   display: none;
 }
 
+/* ===== قائمة المشاهد الجانبية - شفافة ضبابية ===== */
 #sceneList {
   position: absolute;
-  top: 0;
-  left: -220px;
-  padding-top: 40px;
-  width: 220px;
-  max-height: 100%;
+  top: 80px;
+  left: -260px;
+  width: 260px;
+  max-height: calc(100% - 100px);
   overflow-x: hidden;
   overflow-y: auto;
   margin-left: 0;
-  -webkit-transition: margin-left 0.5s ease-in-out;
-  transition: margin-left 0.5s ease-in-out;
+  -webkit-transition: margin-left 0.4s ease-in-out;
+  transition: margin-left 0.4s ease-in-out;
+  z-index: 9000;
+  border-radius: 0 12px 12px 0;
+  pointer-events: none;
 }
 
 .mobile #sceneList {
-  padding-top: 50px;
-}
-
-/* ===== SCENE LIST - BLACK TRANSPARENT ===== */
-#sceneList .scenes {
-  width: 100%;
-  background-color: rgb(20,20,20);
-  background-color: rgba(0,0,0,0.9);
-}
-
-.mobile #sceneList {
-  width: 100%;
-  height: 100%;
-  left: -100%;
-}
-
-.mobile #sceneList.enabled {
-  margin-left: 100%;
-}
-
-.mobile #sceneList .scenes {
-  height: 100%;
+  top: 70px;
+  width: 220px;
+  left: -220px;
+  max-height: calc(100% - 80px);
 }
 
 #sceneList.enabled {
+  margin-left: 260px;
+  pointer-events: auto;
+}
+
+.mobile #sceneList.enabled {
   margin-left: 220px;
+}
+
+#sceneList .scenes {
+  width: 100%;
+  background: rgba(20,30,40,0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(74,108,143,0.25);
+  border-left: none;
+  border-radius: 0 12px 12px 0;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
 #sceneList .scene {
   display: block;
   width: 100%;
-  height: 30px;
+  height: 45px;
+  border-bottom: 1px solid rgba(74,108,143,0.15);
 }
 
 .mobile #sceneList .scene {
   height: 40px;
 }
 
+#sceneList .scene:last-child {
+  border-bottom: none;
+}
+
 #sceneList .scene .text {
   width: 100%;
   height: 100%;
-  padding: 0 15px;
-  line-height: 30px;
+  padding: 0 20px;
+  line-height: 45px;
+  color: rgba(255,255,255,0.9);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  transition: all 0.2s;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -316,24 +273,94 @@ body.fullscreen-enabled.mobile #autorotateToggle {
 
 .mobile #sceneList .scene .text {
   line-height: 40px;
+  padding: 0 15px;
 }
 
-/* ===== SCENE LIST HOVER & CURRENT - BLACK ===== */
-.no-touch #sceneList .scene:hover {
-  background-color: rgb(50,50,50);
-  background-color: rgba(0,0,0,0.8);
+#sceneList .scene:hover .text {
+  background: rgba(74,108,143,0.2);
+  color: white;
+  padding-left: 25px;
 }
 
-#sceneList .scene.current {
-  background-color: rgb(50,50,50);
-  background-color: rgba(0,0,0,0.8);
+#sceneList .scene.current .text {
+  background: rgba(74,108,143,0.3);
+  color: white;
+  border-right: 4px solid #88aaff;
 }
 
-body.single-scene #sceneList, body.single-scene #sceneListToggle {
+body.single-scene #sceneList, 
+body.single-scene #sceneListToggle {
   display: none;
 }
 
-/* Link hotspot */
+/* ===== أزرار التحكم السفلية ===== */
+.viewControlButton {
+  display: none;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  padding: 10px;
+  background: transparent;
+  z-index: 9500;
+}
+
+body.view-control-buttons .viewControlButton {
+  display: block;
+}
+
+@media (max-width: 600px) {
+  body.view-control-buttons .viewControlButton {
+    display: none;
+  }
+}
+
+.viewControlButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(20,30,40,0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 50%;
+  border: 1px solid rgba(74,108,143,0.3);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.viewControlButton .icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 30px;
+  height: 30px;
+  filter: brightness(0) invert(1) drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+}
+
+.viewControlButton-1 { margin-left: -165px; }
+.viewControlButton-2 { margin-left: -105px; }
+.viewControlButton-3 { margin-left: -45px; }
+.viewControlButton-4 { margin-left: 15px; }
+.viewControlButton-5 { margin-left: 75px; }
+.viewControlButton-6 { margin-left: 135px; }
+
+.mobile .viewControlButton {
+  width: 44px;
+  height: 44px;
+  bottom: 15px;
+}
+
+.mobile .viewControlButton-1 { margin-left: -145px; }
+.mobile .viewControlButton-2 { margin-left: -95px; }
+.mobile .viewControlButton-3 { margin-left: -45px; }
+.mobile .viewControlButton-4 { margin-left: 5px; }
+.mobile .viewControlButton-5 { margin-left: 55px; }
+.mobile .viewControlButton-6 { margin-left: 105px; }
+
+/* ===== النقاط الساخنة (Hotspots) ===== */
 .link-hotspot {
   width: 60px;
   height: 60px;
@@ -359,7 +386,6 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   cursor: pointer;
 }
 
-/* ===== LINK HOTSPOT TOOLTIP - BLACK ===== */
 .link-hotspot-tooltip {
   position: absolute;
   left: 100%;
@@ -369,9 +395,13 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   max-width: 300px;
   padding: 8px 10px;
   border-radius: 5px;
-  background-color: rgb(20,20,20);
-  background-color: rgba(0,0,0,0.9);
-  color: #fff;
+  background: rgba(20,30,40,0.35) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(74,108,143,0.4) !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+  color: white !important;
+  font-weight: 500 !important;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -382,6 +412,7 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   transform: translateX(-8px);
   -webkit-transition: -ms-transform 0.3s, -webkit-transform 0.3s, transform 0.3s, opacity 0.3s;
   transition: -ms-transform 0.3s, -webkit-transform 0.3s, transform 0.3s, opacity 0.3s;
+  pointer-events: none;
 }
 
 .mobile .link-hotspot {
@@ -393,22 +424,7 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   -ms-transform: translateX(0);
   -webkit-transform: translateX(0);
   transform: translateX(0);
-}
-
-.link-hotspot-tooltip {
-  pointer-events: none;
-}
-
-.no-touch .link-hotspot:hover .link-hotspot-tooltip {
   pointer-events: all;
-}
-
-.tooltip-fallback .link-hotspot-tooltip {
-  display: none;
-}
-
-.no-touch .tooltip-fallback .link-hotspot:hover .link-hotspot-tooltip {
-  display: block;
 }
 
 /* Info hotspot */
@@ -429,12 +445,15 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   opacity: 1;
 }
 
-/* ===== INFO HOTSPOT HEADER - BLACK ===== */
 .info-hotspot .info-hotspot-header {
   width: 40px;
   height: 40px;
   border-radius: 20px;
-  background-color: rgb(40,40,40);
+  background: rgba(20,30,40,0.35) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(74,108,143,0.3) !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
   cursor: pointer;
   -webkit-transition: width 0.3s ease-in-out 0.5s, border-radius 0.3s ease-in-out 0.5s;
   transition: width 0.3s ease-in-out 0.5s, border-radius 0.3s ease-in-out 0.5s;
@@ -463,7 +482,6 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   -webkit-transition: width 0.3s ease-in-out, border-radius 0.3s ease-in-out;
   transition: width 0.3s ease-in-out, border-radius 0.3s ease-in-out;
 }
-
 .info-hotspot .info-hotspot-icon-wrapper {
   width: 40px;
   height: 40px;
@@ -558,7 +576,10 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   top: 40px;
   left: 0;
   padding: 10px;
-  background-color: rgb(20,20,20);
+  background: rgba(20,30,40,0.35) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(74,108,143,0.3) !important;
   border-bottom-right-radius: 5px;
   border-bottom-left-radius: 5px;
   overflow-y: auto;
@@ -613,155 +634,7 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   transition: opacity 0.2s ease-in-out, visibility 0s 0s;
 }
 
-.info-hotspot-modal .info-hotspot-header {
-  position: absolute;
-  top: 60px;
-  left: 10px;
-  right: 10px;
-  width: auto;
-  height: 50px;
-  background-color: rgb(40,40,40);
-  background-color: rgba(0,0,0,0.8);
-  opacity: 0;
-  -webkit-transition: opacity 0.3s ease-in-out 0.2s;
-  transition: opacity 0.3s ease-in-out 0.2s;
-}
-
-.info-hotspot-modal.visible .info-hotspot-header {
-  opacity: 1;
-  -webkit-transition: opacity 0.3s ease-in-out 0.2s;
-  transition: opacity 0.3s ease-in-out 0.2s;
-}
-
-.info-hotspot-modal .info-hotspot-icon-wrapper {
-  width: 50px;
-  height: 50px;
-}
-
-.info-hotspot-modal .info-hotspot-icon {
-  width: 90%;
-  height: 90%;
-  margin: 5%;
-}
-
-.info-hotspot-modal .info-hotspot-title-wrapper {
-  position: absolute;
-  top: 0;
-  left: 50px;
-  right: 50px;
-  width: auto;
-  height: 50px;
-  padding: 0 10px;
-}
-
-.info-hotspot-modal .info-hotspot-title-wrapper:before {
-  content: '';
-  display: inline-block;
-  vertical-align: middle;
-  height: 100%;
-}
-
-.info-hotspot-modal .info-hotspot-title {
-  display: inline-block;
-  vertical-align: middle;
-  -moz-user-select: text;
-  -webkit-user-select: text;
-  -ms-user-select: text;
-  user-select: text;
-}
-
-.info-hotspot-modal .info-hotspot-close-wrapper {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50px;
-  height: 50px;
-  background-color: rgb(60,60,60);
-  background-color: rgba(0,0,0,0.8);
-  cursor: pointer;
-}
-
-.info-hotspot-modal .info-hotspot-close-icon {
-  width: 70%;
-  height: 70%;
-  margin: 15%;
-}
-
-.info-hotspot-modal .info-hotspot-text {
-  position: absolute;
-  top: 110px;
-  bottom: 10px;
-  left: 10px;
-  right: 10px;
-  padding: 10px;
-  background-color: rgb(20,20,20);
-  background-color: rgba(0,0,0,0.8);
-  overflow-y: auto;
-  opacity: 0;
-  -webkit-transition: opacity 0.3s ease-in-out;
-  transition: opacity 0.3s ease-in-out;
-  -moz-user-select: text;
-  -webkit-user-select: text;
-  -ms-user-select: text;
-  user-select: text;
-}
-
-.info-hotspot-modal.visible .info-hotspot-text {
-  opacity: 1;
-  -webkit-transition: opacity 0.3s ease-in-out 0.4s;
-  transition: opacity 0.3s ease-in-out 0.4s;
-}
-
-/* ===== VIEW CONTROL BUTTONS - BLACK BACKGROUND ===== */
-.viewControlButton {
-  display: none;
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 40px;
-  height: 40px;
-  padding: 5px;
-  background-color: rgb(30,30,30);
-  background-color: rgba(0,0,0,0.7);
-}
-
-body.view-control-buttons .viewControlButton {
-  display: block;
-}
-
-@media (max-width: 600px) {
-  body.view-control-buttons .viewControlButton {
-    display: none;
-  }
-}
-
-.viewControlButton .icon {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 30px;
-  height: 30px;
-}
-
-.viewControlButton-1 {
-  margin-left: -145px;
-}
-.viewControlButton-2 {
-  margin-left: -95px;
-}
-.viewControlButton-3 {
-  margin-left: -45px;
-}
-.viewControlButton-4 {
-  margin-left: 5px;
-}
-.viewControlButton-5 {
-  margin-left: 55px;
-}
-.viewControlButton-6 {
-  margin-left: 105px;
-}
-
+/* ===== الفيديو والصورة التمهيدية ===== */
 #introVideo,
 #introImage {
   position: absolute;
@@ -784,94 +657,148 @@ body.view-control-buttons .viewControlButton {
   background: url("arial-view.jpg") center center / cover no-repeat;
 }
 
-#enterTour {
+#skipVideoBtn {
+  position: absolute !important;
+  bottom: 30px !important;
+  right: 30px !important;
+  background: rgba(255,255,255,0.15) !important;
+  color: white !important;
+  padding: 14px 32px !important;
+  border-radius: 50px !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  border: 1px solid rgba(255,255,255,0.3) !important;
+  cursor: pointer !important;
+  z-index: 999999 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2) !important;
+  transition: all 0.3s ease !important;
+}
+
+#tourOptions {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100px;  /* تم تعديل حجم الدائرة */
-  height: 100px; /* تم تعديل حجم الدائرة */
-  background: rgba(255,255,255,0.9);
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 10000;
   display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 10000;
   align-items: center;
-  justify-content: center;
-  animation: pulse 2s infinite; /* تأثير الوميض */
+}
+
+#browserTourBtn, #mepTourBtn {
+  padding: 16px 32px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 12px;
+  border: none;
+  background-color: rgba(255,255,255,0.2);
+  color: white;
+  backdrop-filter: blur(10px);
+  transition: 0.3s;
+}
+
+#browserTourBtn:hover, #mepTourBtn:hover {
+  transform: scale(1.05);
+  background: rgba(255,255,255,0.3);
   box-shadow: 0 0 20px rgba(255,255,255,0.5);
 }
 
-#enterTour:hover {
-  background: #ffffff;
-  transform: translate(-50%, -50%) scale(1.1);
-  box-shadow: 0 0 30px rgba(255,255,255,0.8);
-}
-
-#enterTour img {
-  width: 60px;   /* تم تعديل حجم الأيقونة */
-  height: 60px;  /* تم تعديل حجم الأيقونة */
-  object-fit: contain;
-}
-
-/* تأثير الوميض (النبض) */
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 20px rgba(255, 255, 255, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-  }
-}
-/* ===== FLOOR PLAN MODAL ===== */
+/* ===== أيقونة المخططات (MAP) ===== */
 #mapIconButton {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 10000;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  backdrop-filter: none;
-  transition: transform 0.2s ease;
+  background: rgba(20,30,40,0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(74,108,143,0.4);
+  border-radius: 50%;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease, background 0.2s;
 }
 
 #mapIconButton:hover {
   transform: scale(1.1);
+  background: rgba(30,40,55,0.45);
+  border-color: rgba(74,108,143,0.6);
 }
 
 #mapIconImg {
-  width: 60px;
-  height: 60px;
+  width: 32px;
+  height: 32px;
   object-fit: contain;
   display: block;
+  filter: brightness(0) invert(1);
 }
 
 .map-icon-text {
   color: white;
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 600;
-  margin-top: 4px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  letter-spacing: 1px;
-  background: rgba(0,0,0,0.6);
-  padding: 4px 12px;
-  border-radius: 20px;
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255,255,255,0.3);
-  font-family: 'Helvetica Neue', Arial, sans-serif;
+  margin-top: 2px;
+  letter-spacing: 0.5px;
+  background: transparent;
+  padding: 0;
+  border: none;
+  backdrop-filter: none;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
 
+/* ===== الشعار ===== */
+#platformLogo {
+  position: fixed !important;
+  top: 15px !important;
+  right: 120px !important;
+  left: auto !important;
+  bottom: auto !important;
+  z-index: 10001 !important;
+  display: none;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  text-align: right;
+  pointer-events: none;
+}
+
+.mobile #platformLogo {
+  right: 100px !important;
+}
+
+#logoText {
+  color: white !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  font-family: 'Helvetica Neue', Arial, sans-serif !important;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+  letter-spacing: 0.5px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+.mobile #logoText {
+  font-size: 16px !important;
+}
+
+#logoSubtext {
+  display: none !important;
+}
+
+/* ===== نافذة المخططات المنبثقة ===== */
 .floorplan-modal {
   display: none;
   position: fixed;
@@ -905,6 +832,27 @@ body.view-control-buttons .viewControlButton {
 @keyframes fadeScale {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: 2px solid rgba(255,255,255,0.5);
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 21000;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .floorplan-header {
@@ -1006,38 +954,6 @@ body.view-control-buttons .viewControlButton {
   left: auto;
 }
 
-.modal-close-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.2);
-  border: 2px solid rgba(255,255,255,0.5);
-  color: white;
-  font-size: 28px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 21000;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition
-@media (max-width: 768px) {
-  /* ... الكود الموجود ... */
-  
-  .prev-btn {
-    left: 5px;
-  }
-  
-  .next-btn {
-    right: 5px;
-  }
-}
-/* ===== مؤشرات المخططات (GROUND FLOOR, FIRST FLOOR, SECOND FLOOR) ===== */
 .floorplan-indicators {
   display: flex;
   justify-content: center;
@@ -1079,8 +995,16 @@ body.view-control-buttons .viewControlButton {
   box-shadow: 0 5px 20px rgba(0, 123, 255, 0.5);
 }
 
-/* تحسين للشاشات الصغيرة */
-@media (max-width: 600px) {
+/* ===== تحسينات للشاشات الصغيرة ===== */
+@media (max-width: 768px) {
+  .prev-btn {
+    left: 5px;
+  }
+  
+  .next-btn {
+    right: 5px;
+  }
+  
   .floorplan-indicators {
     gap: 10px;
     padding: 12px 8px;
@@ -1090,396 +1014,20 @@ body.view-control-buttons .viewControlButton {
     font-size: 12px;
     padding: 6px 12px;
   }
-}
-#tourOptions{
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-display:flex;
-flex-direction:column;
-gap:20px;
-z-index:10000;
-align-items:center;
-}
-
-.tourBtn{
-padding:16px 40px;
-font-size:22px;
-font-weight:bold;
-border-radius:40px;
-cursor:pointer;
-text-align:center;
-backdrop-filter:blur(10px);
-background:rgba(0,0,0,0.6);
-color:white;
-border:1px solid rgba(255,255,255,0.4);
-transition:0.3s;
-}
-
-.tourBtn:hover{
-transform:scale(1.05);
-background:rgba(0,0,0,0.8);
-}
-
-.pathsTour{
-background:rgba(200,0,0,0.8);
-border:1px solid rgba(255,255,255,0.6);
-}
-.tourOption:hover {
-  animation: pulse 1.5s infinite;
-  box-shadow: 0 0 20px rgba(255,255,255,0.7);
+  
+  #mapIconButton {
+    width: 60px;
+    height: 60px;
+  }
+  
+  #mapIconImg {
+    width: 28px;
+    height: 28px;
+  }
 }
 
 @keyframes pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.05); }
   100% { transform: scale(1); }
-}
-/* ===== التعديلات الجديدة: واجهة شفافة ضبابية (Glassmorphism) ===== */
-
-/* 1. شريط العنوان العلوي - شفاف ضبابي */
-#titleBar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 40px;
-  height: 60px; /* زيادة الارتفاع قليلاً */
-  text-align: center;
-  background: rgba(20,30,40,0.35); /* لون شفاف أنيق */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(74,108,143,0.25);
-  z-index: 9500;
-  pointer-events: none; /* للسماح بالنقر من خلاله إذا لزم الأمر */
-}
-
-#titleBar .sceneName {
-  width: 100%;
-  height: 100%;
-  line-height: 60px; /* تعديل ليتناسب مع الارتفاع الجديد */
-  padding: 0 20px;
-  background: transparent; /* إزالة الخلفية السوداء */
-  color: white;
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  -moz-user-select: text;
-  -webkit-user-select: text;
-  -ms-user-select: text;
-  user-select: text;
-}
-
-/* 2. أزرار التحكم العلوية - شفافة ضبابية */
-#autorotateToggle,
-#fullscreenToggle,
-#sceneListToggle {
-  display: block;
-  position: absolute;
-  top: 0;
-  width: 60px;
-  height: 60px;
-  padding: 15px;
-  background: transparent !important; /* إلغاء الخلفية السوداء */
-  z-index: 10000;
-  pointer-events: auto;
-}
-
-#autorotateToggle { right: 0; }
-#fullscreenToggle { right: 60px; }
-#sceneListToggle { left: 0; }
-
-/* خلفية شفافة ضبابية للأزرار */
-#autorotateToggle::before,
-#fullscreenToggle::before,
-#sceneListToggle::before {
-  content: '';
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 10px;
-  bottom: 10px;
-  background: rgba(20,30,40,0.35);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 50%;
-  border: 1px solid rgba(74,108,143,0.3);
-  z-index: -1;
-}
-
-#autorotateToggle .icon,
-#fullscreenToggle .icon,
-#sceneListToggle .icon {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  width: 30px;
-  height: 30px;
-  filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
-}
-
-/* 3. أزرار التحكم السفلية (View Controls) - شفافة ضبابية */
-.viewControlButton {
-  display: none;
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  width: 50px;
-  height: 50px;
-  padding: 10px;
-  background: transparent;
-  z-index: 9500;
-}
-
-.viewControlButton::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(20,30,40,0.35);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 50%;
-  border: 1px solid rgba(74,108,143,0.3);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-
-.viewControlButton .icon {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 30px;
-  height: 30px;
-  filter: brightness(0) invert(1) drop-shadow(0 2px 5px rgba(0,0,0,0.3));
-}
-
-/* تعديل المواضع للأزرار السفلية */
-.viewControlButton-1 { margin-left: -165px; }
-.viewControlButton-2 { margin-left: -105px; }
-.viewControlButton-3 { margin-left: -45px; }
-.viewControlButton-4 { margin-left: 15px; }
-.viewControlButton-5 { margin-left: 75px; }
-.viewControlButton-6 { margin-left: 135px; }
-
-/* 4. قائمة المشاهد الجانبية - شفافة ضبابية */
-#sceneList {
-  position: absolute;
-  top: 80px; /* تحت الشريط العلوي مباشرة */
-  left: -260px;
-  width: 260px;
-  max-height: calc(100% - 100px);
-  overflow-x: hidden;
-  overflow-y: auto;
-  margin-left: 0;
-  -webkit-transition: margin-left 0.4s ease-in-out;
-  transition: margin-left 0.4s ease-in-out;
-  z-index: 9000;
-  border-radius: 0 12px 12px 0;
-  pointer-events: none;
-}
-
-#sceneList.enabled {
-  margin-left: 260px;
-  pointer-events: auto;
-}
-
-#sceneList .scenes {
-  width: 100%;
-  background: rgba(20,30,40,0.25);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(74,108,143,0.25);
-  border-left: none;
-  border-radius: 0 12px 12px 0;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-}
-
-#sceneList .scene {
-  display: block;
-  width: 100%;
-  height: 45px;
-  border-bottom: 1px solid rgba(74,108,143,0.15);
-}
-
-#sceneList .scene:last-child {
-  border-bottom: none;
-}
-
-#sceneList .scene .text {
-  width: 100%;
-  height: 100%;
-  padding: 0 20px;
-  line-height: 45px;
-  color: rgba(255,255,255,0.9);
-  font-size: 14px;
-  font-weight: 400;
-  letter-spacing: 0.3px;
-  transition: all 0.2s;
-}
-
-#sceneList .scene:hover .text {
-  background: rgba(74,108,143,0.2);
-  color: white;
-  padding-left: 25px;
-}
-
-#sceneList .scene.current .text {
-  background: rgba(74,108,143,0.3);
-  color: white;
-  border-right: 4px solid #88aaff;
-}
-
-/* 5. أيقونة المخططات (MAP) - تحسين المظهر */
-#mapIconButton {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 70px;
-  height: 70px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 10000;
-  background: rgba(20,30,40,0.35);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(74,108,143,0.4);
-  border-radius: 50%;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-  transition: transform 0.2s ease, background 0.2s;
-}
-
-#mapIconButton:hover {
-  transform: scale(1.1);
-  background: rgba(30,40,55,0.45);
-  border-color: rgba(74,108,143,0.6);
-}
-
-#mapIconImg {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-  display: block;
-  filter: brightness(0) invert(1);
-}
-
-.map-icon-text {
-  color: white;
-  font-size: 11px;
-  font-weight: 600;
-  margin-top: 2px;
-  letter-spacing: 0.5px;
-  background: transparent;
-  padding: 0;
-  border: none;
-  backdrop-filter: none;
-  text-shadow: 0 2px 5px rgba(0,0,0,0.5);
-}
-
-/* 6. الشعار - تعديل ليكون بسطر واحد */
-#platformLogo {
-  position: fixed !important;
-  top: 15px !important; /* تعديل ليكون داخل الشريط العلوي */
-  right: 120px !important; /* بجانب الأزرار */
-  left: auto !important;
-  bottom: auto !important;
-  z-index: 10001 !important;
-  display: none;
-  background: transparent !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  text-align: right;
-  pointer-events: none;
-}
-
-#logoText {
-  color: white !important;
-  font-size: 18px !important; /* تصغير الخط */
-  font-weight: 600 !important;
-  font-family: 'Helvetica Neue', Arial, sans-serif !important;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
-  letter-spacing: 0.5px !important;
-  line-height: 1 !important;
-  white-space: nowrap !important; /* منع النزول لسطر جديد */
-}
-
-#logoSubtext {
-  display: none !important; /* إخفاء النص الفرعي مؤقتاً */
-}
-
-/* 7. تحسين للهواتف المحمولة */
-@media (max-width: 768px) {
-  #titleBar { height: 50px; }
-  #titleBar .sceneName { line-height: 50px; font-size: 16px; }
-  
-  #autorotateToggle, #fullscreenToggle, #sceneListToggle {
-    width: 50px;
-    height: 50px;
-  }
-  
-  #autorotateToggle::before, #fullscreenToggle::before, #sceneListToggle::before {
-    top: 5px;
-    left: 5px;
-    right: 5px;
-    bottom: 5px;
-  }
-  
-  .viewControlButton {
-    width: 44px;
-    height: 44px;
-    bottom: 15px;
-  }
-  
-  .viewControlButton-1 { margin-left: -145px; }
-  .viewControlButton-2 { margin-left: -95px; }
-  .viewControlButton-3 { margin-left: -45px; }
-  .viewControlButton-4 { margin-left: 5px; }
-  .viewControlButton-5 { margin-left: 55px; }
-  .viewControlButton-6 { margin-left: 105px; }
-  
-  #sceneList { width: 220px; }
-  #sceneList.enabled { margin-left: 220px; }
-  #sceneList .scene { height: 40px; }
-  #sceneList .scene .text { line-height: 40px; }
-  
-  #mapIconButton { width: 60px; height: 60px; }
-  #mapIconImg { width: 28px; height: 28px; }
-  
-  #platformLogo { right: 100px !important; }
-  #logoText { font-size: 16px !important; }
-}
-
-/* 8. النقاط الساخنة (Hotspots) - تحسين المظهر */
-.hotspot-tooltip {
-  background: rgba(20,30,40,0.35) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(74,108,143,0.4) !important;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
-  color: white !important;
-  font-weight: 500 !important;
-}
-
-.info-hotspot .info-hotspot-header {
-  background: rgba(20,30,40,0.35) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(74,108,143,0.3) !important;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
-}
-
-.info-hotspot .info-hotspot-text {
-  background: rgba(20,30,40,0.35) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(74,108,143,0.3) !important;
 }
