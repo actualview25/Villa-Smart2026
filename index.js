@@ -493,137 +493,72 @@
 (function() {
   'use strict';
   
-  // دالة تثبيت الشعار في المكان الصحيح
   function fixLogoPosition() {
     var logo = document.getElementById('platformLogo');
     if (!logo) return;
     
-    // إظهار الشعار
     logo.style.display = 'block';
-    
-    // تطبيق التنسيقات الصحيحة - تحت الإطار العلوي
     logo.style.position = 'fixed';
-    logo.style.top = '70px';  // تحت الإطار العلوي (الإطار 40px + مسافة)
-    logo.style.right = '30px';
+    logo.style.top = '15px';
+    logo.style.right = '120px';
     logo.style.left = 'auto';
     logo.style.bottom = 'auto';
-    logo.style.zIndex = '9000';  // تحت أزرار التحكم (10000) لكن فوق المحتوى
-    logo.style.textAlign = 'right';
+    logo.style.zIndex = '10001';
     logo.style.background = 'transparent';
     logo.style.padding = '0';
     logo.style.margin = '0';
     
-    // تنسيق النصوص (الحفاظ على التصميم الجميل)
     var logoText = document.getElementById('logoText');
     var logoSubtext = document.getElementById('logoSubtext');
     
     if (logoText) {
       logoText.style.color = 'white';
-      logoText.style.fontSize = '24px';
-      logoText.style.fontWeight = 'bold';
+      logoText.style.fontSize = '18px';
+      logoText.style.fontWeight = '600';
       logoText.style.fontFamily = '"Helvetica Neue", Arial, sans-serif';
-      logoText.style.textShadow = '0 2px 10px rgba(0,0,0,0.5)';
-      logoText.style.letterSpacing = '1px';
-      logoText.style.lineHeight = '1.2';
+      logoText.style.textShadow = '0 2px 8px rgba(0,0,0,0.4)';
+      logoText.style.letterSpacing = '0.5px';
+      logoText.style.lineHeight = '1';
+      logoText.style.whiteSpace = 'nowrap';
     }
     
     if (logoSubtext) {
-      logoSubtext.style.color = 'rgba(255,255,255,0.9)';
-      logoSubtext.style.fontSize = '14px';
-      logoSubtext.style.fontWeight = '500';
-      logoSubtext.style.fontFamily = '"Helvetica Neue", Arial, sans-serif';
-      logoSubtext.style.textShadow = '0 2px 8px rgba(0,0,0,0.5)';
-      logoSubtext.style.letterSpacing = '2px';
-      logoSubtext.style.marginTop = '4px';
+      logoSubtext.style.display = 'none';
     }
     
-    console.log('✅ Logo positioned at top:70px, right:30px');
+    console.log('✅ Logo positioned at top:15px, right:120px');
   }
   
-  // ربط إظهار الشعار ببدء الجولة
   var originalStart = window.startTour;
   window.startTour = function() {
     if (originalStart) originalStart();
     setTimeout(fixLogoPosition, 500);
   };
   
-  // ربط بالضغط على Enter
   document.addEventListener('DOMContentLoaded', function() {
-    var enterBtn = document.getElementById('enterTour');
-    if (enterBtn) {
-      enterBtn.addEventListener('click', function() {
+    var browserBtn = document.getElementById('browserTourBtn');
+    if (browserBtn) {
+      browserBtn.addEventListener('click', function() {
         setTimeout(fixLogoPosition, 800);
       });
     }
   });
   
-  // مراقب للتأكد من بقاء الشعار في مكانه
   var observer = new MutationObserver(function() {
     var logo = document.getElementById('platformLogo');
     if (logo && logo.style.display === 'block') {
-      logo.style.top = '70px';
-      logo.style.right = '30px';
-    }
-  });
-  
-  observer.observe(document.body, {
-    attributes: true,
-    childList: true,
-    subtree: true
-  });
-  /* ========== تحديث مظهر الشعار (LOGO) ليكون بسطر واحد ========== */
-(function() {
-  'use strict';
-  
-  function updateLogoStyle() {
-    const logo = document.getElementById('platformLogo');
-    const logoText = document.getElementById('logoText');
-    const logoSubtext = document.getElementById('logoSubtext');
-    
-    if (logo) {
-      logo.style.position = 'fixed';
       logo.style.top = '15px';
       logo.style.right = '120px';
-      logo.style.background = 'transparent';
-      logo.style.padding = '0';
-      logo.style.zIndex = '10001';
     }
-    
-    if (logoText) {
-      logoText.style.fontSize = '18px';
-      logoText.style.fontWeight = '600';
-      logoText.style.whiteSpace = 'nowrap';
-      logoText.style.lineHeight = '1';
-    }
-    
-    if (logoSubtext) {
-      // إخفاء النص الفرعي للتبسيط (أو يمكنك دمجه مع النص الرئيسي)
-      logoSubtext.style.display = 'none';
-    }
-  }
-  
-  // تنفيذ التحديث عند ظهور الشعار
-  const originalStart = window.startTour;
-  window.startTour = function() {
-    if (originalStart) originalStart();
-    setTimeout(updateLogoStyle, 600);
-  };
-  
-  // مراقب للتغييرات
-  const observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-      if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-        const logo = document.getElementById('platformLogo');
-        if (logo && logo.style.display === 'flex') {
-          updateLogoStyle();
-        }
-      }
-    });
   });
   
-  const logo = document.getElementById('platformLogo');
+  var logo = document.getElementById('platformLogo');
   if (logo) {
-    observer.observe(logo, { attributes: true });
+    observer.observe(document.body, {
+      attributes: true,
+      childList: true,
+      subtree: true
+    });
   }
+  
 })();
-
